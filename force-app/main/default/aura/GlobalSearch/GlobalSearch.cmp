@@ -1,0 +1,738 @@
+<aura:component
+    implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction"
+    access="global" controller="CustomerDetails">
+
+    <aura:html tag="style">
+        .slds-modal__container{
+        height : auto; width: 80%; max-width: 170vh;
+        }
+        .slds-modal__content{
+        height : 40vh !important;
+        max-height: 40vh !important;
+        }
+        .slds-modal__footer{
+        display: inline !important;
+        }
+    </aura:html>
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:registerEvent name="sampleCmpEvent" type="c:MessageEvent" />
+    <aura:attribute name="agentId" type="String" />
+
+    <aura:attribute name="showSearchResults" type="Boolean" default="false" />
+    <aura:attribute name="emptyWrapper" type="Boolean" default="false" />
+    <aura:attribute name="searchKey" type="String" />
+    <aura:attribute name="accountList" type="List" default="Account[]" />
+    <aura:attribute name="accountColumns" type="List" />
+    <aura:attribute name="contactList" type="List" default="Contact[]" />
+    <aura:attribute name="contactColumns" type="List" />
+    <aura:attribute name="oppList" type="List" default="Opportunity[]" />
+    <aura:attribute name="oppColumns" type="List" />
+    <aura:attribute name="leadList" type="List" default="Lead[]" />
+    <aura:attribute name="leadColumns" type="List" />
+    <aura:attribute name="options" type="List" />
+    <aura:attribute name="taskList" type="List" />
+    <aura:attribute name="selectedValue" type="String" />
+
+    <aura:attribute name="ShowSearchBox" type="Boolean" default="true" />
+
+    <!-- ########################################## Global Search Modal Popup #####################################-->
+    <aura:attribute name="isModalOpen" type="boolean" default="true" />
+    <aura:attribute name="showLeadRecordDetails" type="boolean" default="false" />
+    <aura:attribute name="showAccountRecordDetails" type="boolean" default="false" /> 
+    <aura:attribute name="ShwRecdetails" type="boolean" default="false" /> 
+
+
+    <!-- ######################################## Account and Lead Record view form Attribute #########################-->
+    <aura:attribute name="AccountRecordId" type="String" />
+    <aura:attribute name="LeadRecordId" type="String" />
+
+
+    <aura:if isTrue="{!v.isModalOpen}">
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+            aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <!-- Modal/Popup Box Header Starts here-->
+                <header class="slds-modal__header">
+                    <lightning:buttonIcon iconName="utility:close" onclick="{! c.closeModel }" alternativeText="close"
+                        variant="bare-inverse" class="slds-modal__close" />
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Global Search</h2>
+                </header>
+                <!--Modal/Popup Box Body Starts here-->
+                
+
+                
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <div>
+                        <aura:if isTrue="{!v.ShowSearchBox}">
+                                <div class="slds-grid slds-wrap">
+                                    <div class="slds-col slds-size_1-of-12"></div>
+                                    <div class="slds-col slds-size_2-of-12 slds-p-right_small slds-p-left_small slds-p-top_large">
+                                        <span>
+                                            <lightning:select name="colorId" label="Select an Object:" aura:id="colorId"
+                                                value="{!v.selectedValue}">
+                                                <aura:iteration items="{!v.options}" var="option">
+                                                    <option text="{!option.label}" value="{!option.id}" />
+                                                </aura:iteration>
+                                            </lightning:select>
+                                        </span>
+                                    </div>
+                                    <div class="slds-col slds-size_7-of-12 slds-p-right_small slds-p-left_small slds-p-top_large">
+                                        <span class="slds-p-top_large">
+                                            <lightning:input name="searchKey" placeholder="Enter Search Key"
+                                                value="{!v.searchKey}" onchange="{!c.search}" class="slds-p-top_medium" />
+                                            <!-- ui:inputText aura:id="searchInput" keyup="{!c.search}" updateOn="keyup"
+                                            placeholder="Enter Search Key" size="10" / -->
+                                        </span>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-12 slds-p-right_small slds-p-left_small slds-p-top_large">
+                                        <span>
+                                            <lightning:button variant="brand" label="Search" title="Search"
+                                                onclick="{!c.search}" class="SearchButton" />
+                                        </span>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-12"></div>
+
+                                </div>
+                        </aura:if>
+                        <lightning:spinner aura:id="mySpinner" alternativeText="Processing.." title="Processing.." variant="brand" size="large" class="slds-hide"/>
+                        
+                        <aura:if isTrue="{!v.showSearchResults}">
+                            <lightning:layout multipleRows="true">
+                                <lightning:layoutItem padding="around-small" size="12">
+                                    <aura:if isTrue="{!v.accountList.length>0}">
+                                        <span style="font-size:16px;font-weight:bold">Account</span>
+                                        <!--lightning:datatable keyField="id" data="{!v.accountList}" columns="{!v.accountColumns}"
+                                                             hideCheckboxColumn="true" / -->
+                                        <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                                            <thead>
+                                                <tr class="slds-line-height_reset">
+                                                    <th class="" scope="col">
+                                                        <div class="slds-truncate" title="S.No">S.No</div>
+                                                    </th>
+                                                    <th class="" scope="col">
+                                                        <div class="slds-truncate" title="Name">Name</div>
+                                                    </th>
+                                                    <th class="" scope="col">
+                                                        <div class="slds-truncate" title="Related Object">Email
+                                                        </div>
+                                                    </th>
+                                                    <th class="" scope="col">
+                                                        <div class="slds-truncate" title="Field Name">Phone</div>
+                                                    </th>
+                                                    <th class="" scope="col">
+                                                        <div class="slds-truncate" title="Matching Type"> Created Date
+                                                        </div>
+                                                    </th>
+
+                                                </tr>
+                                            </thead>
+                                            <aura:iteration items="{!v.accountList}" var="acc" indexVar="index">
+                                                <tbody>
+                                                    <tr class="slds-hint-parent" id="{!index}">
+
+                                                        <td>
+                                                            {!index + 1}
+                                                        </td>
+                                                        <td class="slds-text-align_center ">
+                                                            <div data-id="{!acc.Id}" class=""
+                                                                onclick="{!c.ShowAccRecordDetail}"
+                                                                style="margin-right: 54%;">
+                                                                <ui:outputText value="{!acc.Name}"
+                                                                    class="slds-text-link_reset" />
+                                                                <!-- lightning:icon size="medium" iconName="standard:feedback" class="slds-text-link_reset"/ -->
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <ui:outputText value="{!acc.Email__c}" />
+                                                        </td>
+                                                        <td>
+                                                            <ui:outputText value="{!acc.Phone}" />
+                                                        </td>
+                                                        <td>
+                                                            <ui:outputText value="{!acc.CreatedDate}" />
+                                                        </td>
+
+                                                    </tr>
+                                                </tbody>
+
+                                            </aura:iteration>
+
+                                        </table>
+                                    </aura:if>
+
+                                </lightning:layoutItem>
+                                <lightning:layoutItem padding="around-small" size="12">
+                                    <aura:if isTrue="{!v.leadList.length>0}">
+                                        <span style="font-size:16px;font-weight:bold">Lead</span>
+                                        <!--lightning:datatable keyField="id" data="{!v.leadList}"
+                                            columns="{!v.leadColumns}" hideCheckboxColumn="true" / -->
+
+                                        <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                                            <thead>
+                                                <tr class="slds-line-height_reset">
+                                                    <th class="" scope="col">
+                                                        <div class="slds-truncate" title="S.No">S.No</div>
+                                                    </th>
+                                                    <th class="" scope="col">
+                                                        <div class="slds-truncate" title="Name">Name</div>
+                                                    </th>
+                                                    <th class="" scope="col">
+                                                        <div class="slds-truncate" title="Related Object">Email
+                                                        </div>
+                                                    </th>
+                                                    <th class="" scope="col">
+                                                        <div class="slds-truncate" title="Field Name">Company</div>
+                                                    </th>
+                                                    <th class="" scope="col">
+                                                        <div class="slds-truncate" title="Matching Type"> Created Date
+                                                        </div>
+                                                    </th>
+
+                                                </tr>
+                                            </thead>
+                                            <aura:iteration items="{!v.leadList}" var="ld" indexVar="index">
+                                                <tbody>
+                                                    <tr class="slds-hint-parent" id="{!index}">
+
+                                                        <td>
+                                                            {!index + 1}
+                                                        </td>
+                                                        <td class="slds-text-align_center ">
+                                                            <div data-id="{!ld.Id}" class=""
+                                                                onclick="{!c.ShowLeadRecordDetail}"
+                                                                style="margin-right: 54%;">
+                                                                <ui:outputText value="{!ld.Name}"
+                                                                    class="slds-text-link_reset" />
+                                                                <!-- lightning:icon size="medium" iconName="standard:feedback" class="slds-text-link_reset"/ -->
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <ui:outputText value="{!ld.Email}" />
+                                                        </td>
+                                                        <td>
+                                                            <ui:outputText value="{!ld.Company}" />
+                                                        </td>
+                                                        <td>
+                                                            <ui:outputText value="{!ld.CreatedDate}" />
+                                                        </td>
+
+                                                    </tr>
+                                                </tbody>
+
+                                            </aura:iteration>
+
+                                        </table>
+
+                                    </aura:if>
+
+                                </lightning:layoutItem>
+                            </lightning:layout>
+                        </aura:if>
+                        <aura:if isTrue="{!v.emptyWrapper}">
+                            <lightning:card>
+                                <div style=" border-radius: 10px; width:1200px; height:50px; font-size: 25px; margin-top: 25px;"
+                                    class="slds-align_absolute-center slds-notify slds-notify_alert slds-alert_warning"
+                                    role="alert">
+
+                                    No Result Found!!!!!
+
+                                </div>
+                            </lightning:card>
+                        </aura:if>
+
+                        <aura:if isTrue="{!v.showAccountRecordDetails}">
+                            <aura:if isTrue="{!not(empty(v.AccountRecordId))}">
+                                <lightning:card title="Account Details" >
+                                    <lightning:recordViewForm recordId="{!v.AccountRecordId}" objectApiName="Account">
+                                <!-- Using lightning:card tag with a title -->
+                                <!-- lightning:card title="Account Details" -->
+                                    <!-- lightning:card body section starts -->
+                                        <!-- Forming a grid of two equal columns -->
+
+                                    <lightning:accordion aura:id="accordion"  allowMultipleSectionsOpen="true">
+
+                                        <lightning:accordionSection name="Account General Details" label="Account General Details">
+                                            <div class="slds-grid">
+                                                <div class="slds-col slds-size_1-of-2 slds-p-around_xx-large">
+                                                    <!-- 
+                                    Using lightning:outputField Tag with fieldName = Api name of field,
+                                    if you are using a custom field, do check you have __c in the api name
+                                 -->
+                                                    <div class="form-group">
+                                                        <lightning:outputField fieldName="Name" />
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <lightning:outputField fieldName="Type" />
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <lightning:outputField fieldName="PersonTitle" />
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <lightning:outputField fieldName="Website" />
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <lightning:outputField fieldName="Industry" />
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <lightning:outputField fieldName="Description" />
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <lightning:outputField fieldName="AccountSource" />
+                                                    </div>
+        
+        
+        
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-2 slds-p-around_xx-large">
+                                                    <div class="form-group">
+                                                        <lightning:outputField fieldName="Customer_ID__c" />
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <lightning:outputField fieldName="Status__c" />
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <lightning:outputField fieldName="Phone" />
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <lightning:outputField fieldName="PersonEmail" />
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <lightning:outputField fieldName="Email__c" />
+                                                    </div>
+        
+                                                </div>
+                                            </div>
+
+                                        </lightning:accordionSection>
+                                        <lightning:accordionSection name="Delivery Details" label="Delivery Details">
+                                            <div class="slds-grid">
+                                                <div class="slds-col slds-size_1-of-2 slds-p-around_xx-large">
+                                                    <!-- 
+                                    Using lightning:outputField Tag with fieldName = Api name of field,
+                                    if you are using a custom field, do check you have __c in the api name
+                                 -->
+                                                    <div class="form-group">
+                                                        <lightning:outputField fieldName="Delivery_Option__c" />
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <lightning:outputField fieldName="Franchisee_SAP_Code__c" />
+                                                    </div>
+        
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-2 slds-p-around_xx-large">
+                                                    <div class="form-group">
+                                                        <lightning:outputField fieldName="Franchisee__c" />
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <lightning:outputField fieldName="Warehouse__c" />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </lightning:accordionSection>
+                                        <lightning:accordionSection name="Additional Information" label="Additional Information">
+                                            <div class="slds-grid">
+                                                <div class="slds-col slds-size_1-of-2 slds-p-around_xx-large">
+                                                    <!-- 
+                                    Using lightning:outputField Tag with fieldName = Api name of field,
+                                    if you are using a custom field, do check you have __c in the api name
+                                 -->
+                                                    <div class="form-group">
+                                                        <lightning:outputField fieldName="Date_of_Birth__pc" />
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <lightning:outputField fieldName="Wedding_Anniversary__pc" />
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <lightning:outputField fieldName="Occupation__pc" />
+                                                    </div>
+        
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-2 slds-p-around_xx-large">
+                                                    <div class="form-group">
+                                                        <lightning:outputField fieldName="Religion__pc" />
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <lightning:outputField fieldName="Gender__pc" />
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <lightning:outputField fieldName="District__c" />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </lightning:accordionSection>
+                                        <lightning:accordionSection name="Address Details" label="Address Details">
+                                            <div class="slds-grid">
+                                                <div class="slds-col slds-size_1-of-2 slds-p-around_xx-large">
+                                                    <!-- 
+                                    Using lightning:outputField Tag with fieldName = Api name of field,
+                                    if you are using a custom field, do check you have __c in the api name
+                                 -->
+                                                    <div class="form-group">
+                                                        <lightning:outputField fieldName="BillingAddress" />
+                                                    </div>
+        
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-2 slds-p-around_xx-large">
+                                                    <div class="form-group">
+                                                        <lightning:outputField fieldName="ShippingAddress" />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </lightning:accordionSection>
+                                        
+
+                                    </lightning:accordion>
+
+                                    
+
+                                    <!--div style="color: rgb(0, 0, 0); border-radius:5px; background-color:rgb(174, 171, 171); height: 25px;"
+                                        class="slds-p-left_large">
+                                        Delivery Details
+                                    </div>
+                                    
+
+                                    <div style="color: rgb(0, 0, 0); border-radius:5px; background-color:rgb(174, 171, 171); height: 25px;"
+                                        class="slds-p-left_large">
+                                        Additional Information
+                                    </div>
+                                    
+
+                                    <div style="color: rgb(0, 0, 0); border-radius:5px; background-color:rgb(174, 171, 171); height: 25px;"
+                                        class="slds-p-left_large">
+                                        Address Details
+                                    </div -->
+                                    
+                                <!-- /lightning:card -->
+                            </lightning:recordViewForm>
+
+                                </lightning:card>
+                            
+
+                            </aura:if>
+                        </aura:if>
+                        
+                        <aura:if isTrue="{!v.showLeadRecordDetails}">
+                            <aura:if isTrue="{!not(empty(v.LeadRecordId))}">
+                                <lightning:card title="Lead Details">
+                            <lightning:recordViewForm recordId="{!v.LeadRecordId}" objectApiName="Lead">
+                                <!-- Using lightning:card tag with a title -->
+                                
+                                    
+                                    <div style="color: rgb(0, 0, 0); border-radius:5px; background-color:rgb(174, 171, 171); height: 25px;"
+                                        class="slds-p-left_large">
+                                        
+                                    </div>
+                                    <lightning:accordion aura:id="accordion"  allowMultipleSectionsOpen="true">
+
+                                        <lightning:accordionSection name="Lead General Details" label="Account General Details">
+                                            <div class="slds-grid">
+                                                <div class="slds-col slds-size_1-of-2 slds-p-around_xx-large">
+                                                    <!-- 
+                                                            Using lightning:outputField Tag with fieldName = Api name of field,
+                                                            if you are using a custom field, do check you have __c in the api name
+                                                        -->
+                                                    <div class="form-group">
+                                                        <lightning:outputField fieldName="Name" />
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <lightning:outputField fieldName="Title" />
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <lightning:outputField fieldName="LeadSource" />
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <lightning:outputField fieldName="Enquiry_Type__c" />
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <lightning:outputField fieldName="District__c" />
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <lightning:outputField fieldName="Phone" />
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <lightning:outputField fieldName="Phone_formatted__c" />
+                                                    </div>
+        
+        
+        
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-2 slds-p-around_xx-large">
+                                                    <div class="form-group">
+                                                        <lightning:outputField fieldName="Lead_Id__c" />
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <lightning:outputField fieldName="Status" />
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <lightning:outputField fieldName="Rating" />
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <lightning:outputField fieldName="Company" />
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <lightning:outputField fieldName="Lead_age__c" />
+                                                    </div>
+        
+                                                </div>
+                                            </div>
+
+                                        </lightning:accordionSection>
+
+                                        <lightning:accordionSection name="Comment" label="Comment">
+                                            <div class="slds-grid">
+                                                <div class="slds-col slds-size_1-of-2 slds-p-around_xx-large">
+                                                    <!-- 
+                                                            Using lightning:outputField Tag with fieldName = Api name of field,
+                                                            if you are using a custom field, do check you have __c in the api name
+                                                        -->
+                                                    <div class="form-group">
+                                                        <lightning:outputField fieldName="Payment_Mode__c" />
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <lightning:outputField fieldName="Description" />
+                                                    </div>
+        
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-2 slds-p-around_xx-large">
+                                                    <div class="form-group">
+                                                        <lightning:outputField fieldName="Budget_Amount__c" />
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <lightning:outputField fieldName="Interested_Product__c" />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </lightning:accordionSection>
+
+                                        <lightning:accordionSection name="Contact Information" label="Contact Information">
+                                            <div class="slds-grid">
+                                                <div class="slds-col slds-size_1-of-2 slds-p-around_xx-large">
+                                                    <!-- 
+                                                            Using lightning:outputField Tag with fieldName = Api name of field,
+                                                            if you are using a custom field, do check you have __c in the api name
+                                                        -->
+                                                    <div class="form-group">
+                                                        <lightning:outputField fieldName="Phone" />
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <lightning:outputField fieldName="Religion__c" />
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <lightning:outputField fieldName="Gender__c" />
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <lightning:outputField fieldName="Occupation__c" />
+                                                    </div>
+        
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-2 slds-p-around_xx-large">
+                                                    <div class="form-group">
+                                                        <lightning:outputField fieldName="Email" />
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <lightning:outputField fieldName="Date_of_Birth__c" />
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <lightning:outputField fieldName="Wedding_Anniversary_Date__c" />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </lightning:accordionSection>
+
+                                        <lightning:accordionSection name="Address Details" label="Address Details">
+                                            <div class="slds-grid">
+                                                <div class="slds-col slds-size_1-of-2 slds-p-around_xx-large">
+                                                    <!-- Using lightning:outputField Tag with fieldName = Api name of field,
+                                                            if you are using a custom field, do check you have __c in the api name
+                                                        -->
+                                                    <div class="form-group">
+                                                        <lightning:outputField fieldName="Address" />
+                                                    </div>
+        
+                                                </div>
+                                            </div>
+
+                                        </lightning:accordionSection>
+                                   
+                                    </lightning:accordion>
+                                    
+                                
+                            </lightning:recordViewForm>
+                        </lightning:card>
+                            </aura:if>
+
+                        </aura:if>
+                    </div>
+
+                </div>
+                <!--Modal/Popup Box Footer Starts here-->
+                <footer class="slds-modal__footer">
+                    <aura:if isTrue="{!v.ShowSearchBox}">
+                        <lightning:button variant="neutral" label="Cancel" title="Cancel" onclick="{! c.closeModel }" />
+                    </aura:if>
+                    <aura:if isTrue="{!v.ShwRecdetails}">
+                        <lightning:button variant="neutral" label="Back" title="Back" onclick="{! c.ShowSearchBoxcmp }" />
+                    </aura:if>
+                    
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+
+    </aura:if>
+
+    <!--aura:if isTrue="{!not(empty(v.AccountRecordId))}">
+        <lightning:recordViewForm recordId="{!v.AccountRecordId}" objectApiName="Account">
+            <lightning:card title="Account Details">
+                <p class="slds-p-horizontal_small">
+                <div style="color: rgb(0, 0, 0); border-radius:5px; background-color:rgb(174, 171, 171); height: 25px;"
+                    class="slds-p-left_large">
+                    Account General Details
+                </div>
+                <div class="slds-grid">
+                    <div class="slds-col slds-size_1-of-2 slds-p-around_xx-large">
+                        <!
+                            Using lightning:outputField Tag with fieldName = Api name of field,
+                            if you are using a custom field, do check you have __c in the api name
+                         >
+                        <div class="form-group">
+                            <lightning:outputField fieldName="Name" />
+                        </div>
+                        <div class="form-group">
+                            <lightning:outputField fieldName="Type" />
+                        </div>
+                        <div class="form-group">
+                            <lightning:outputField fieldName="PersonTitle" />
+                        </div>
+                        <div class="form-group">
+                            <lightning:outputField fieldName="Website" />
+                        </div>
+                        <div class="form-group">
+                            <lightning:outputField fieldName="Industry" />
+                        </div>
+                        <div class="form-group">
+                            <lightning:outputField fieldName="Description" />
+                        </div>
+                        <div class="form-group">
+                            <lightning:outputField fieldName="AccountSource" />
+                        </div>
+
+
+
+                    </div>
+                    <div class="slds-col slds-size_1-of-2 slds-p-around_xx-large">
+                        <div class="form-group">
+                            <lightning:outputField fieldName="Customer_ID__c" />
+                        </div>
+                        <div class="form-group">
+                            <lightning:outputField fieldName="Status__c" />
+                        </div>
+                        <div class="form-group">
+                            <lightning:outputField fieldName="Phone" />
+                        </div>
+                        <div class="form-group">
+                            <lightning:outputField fieldName="PersonEmail" />
+                        </div>
+                        <div class="form-group">
+                            <lightning:outputField fieldName="Email__c" />
+                        </div>
+
+                    </div>
+                </div>
+
+                <div style="color: rgb(0, 0, 0); border-radius:5px; background-color:rgb(174, 171, 171); height: 25px;"
+                    class="slds-p-left_large">
+                    Delivery Details
+                </div>
+                <div class="slds-grid">
+                    <div class="slds-col slds-size_1-of-2 slds-p-around_xx-large">
+                        <! 
+                            Using lightning:outputField Tag with fieldName = Api name of field,
+                            if you are using a custom field, do check you have __c in the api name
+                         >
+                        <div class="form-group">
+                            <lightning:outputField fieldName="Delivery_Option__c" />
+                        </div>
+                        <div class="form-group">
+                            <lightning:outputField fieldName="Franchisee_SAP_Code__c" />
+                        </div>
+
+                    </div>
+                    <div class="slds-col slds-size_1-of-2 slds-p-around_xx-large">
+                        <div class="form-group">
+                            <lightning:outputField fieldName="Franchisee__c" />
+                        </div>
+                        <div class="form-group">
+                            <lightning:outputField fieldName="Warehouse__c" />
+                        </div>
+                    </div>
+                </div>
+
+                <div style="color: rgb(0, 0, 0); border-radius:5px; background-color:rgb(174, 171, 171); height: 25px;"
+                    class="slds-p-left_large">
+                    Additional Information
+                </div>
+                <div class="slds-grid">
+                    <div class="slds-col slds-size_1-of-2 slds-p-around_xx-large">
+                        <! 
+                            Using lightning:outputField Tag with fieldName = Api name of field,
+                            if you are using a custom field, do check you have __c in the api name
+                         >
+                        <div class="form-group">
+                            <lightning:outputField fieldName="Date_of_Birth__pc" />
+                        </div>
+                        <div class="form-group">
+                            <lightning:outputField fieldName="Wedding_Anniversary__pc" />
+                        </div>
+                        <div class="form-group">
+                            <lightning:outputField fieldName="Occupation__pc" />
+                        </div>
+
+                    </div>
+                    <div class="slds-col slds-size_1-of-2 slds-p-around_xx-large">
+                        <div class="form-group">
+                            <lightning:outputField fieldName="Religion__pc" />
+                        </div>
+                        <div class="form-group">
+                            <lightning:outputField fieldName="Gender__pc" />
+                        </div>
+                        <div class="form-group">
+                            <lightning:outputField fieldName="District__c" />
+                        </div>
+                    </div>
+                </div>
+
+                <div style="color: rgb(0, 0, 0); border-radius:5px; background-color:rgb(174, 171, 171); height: 25px;"
+                    class="slds-p-left_large">
+                    Address Details
+                </div>
+                <div class="slds-grid">
+                    <div class="slds-col slds-size_1-of-2 slds-p-around_xx-large">
+                        <! 
+                            Using lightning:outputField Tag with fieldName = Api name of field,
+                            if you are using a custom field, do check you have __c in the api name
+                         >
+                        <div class="form-group">
+                            <lightning:outputField fieldName="BillingAddress" />
+                        </div>
+
+                    </div>
+                    <div class="slds-col slds-size_1-of-2 slds-p-around_xx-large">
+                        <div class="form-group">
+                            <lightning:outputField fieldName="ShippingAddress" />
+                        </div>
+                    </div>
+                </div>
+                </p>
+            </lightning:card>
+        </lightning:recordViewForm>
+
+    </aura:if-->
+
+</aura:component>

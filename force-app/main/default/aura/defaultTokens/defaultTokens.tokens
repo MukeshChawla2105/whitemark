@@ -1,0 +1,7 @@
+<aura:tokens>
+    
+    <aura:token name="divBackgroundColor" value="rgba(255, 255, 255, 0.75)"/>
+    <aura:token name="divBorderRadius" value="0.5rem"/>
+    <aura:token name="fontSize" value="1.125rem"/>
+	
+</aura:tokens>

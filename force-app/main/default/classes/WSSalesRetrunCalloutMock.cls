@@ -1,0 +1,19 @@
+@isTest
+global class WSSalesRetrunCalloutMock implements HttpCalloutMock{
+    // Implement this interface method
+    global HTTPResponse respond(HTTPRequest request) {
+        // Create a fake response
+        HttpResponse response = new HttpResponse();
+        response.setHeader('Content-Type', 'application/json');
+        if(request.getEndpoint()=='http://13.71.71.137:7777/eShopaidService/eShopaidService.svc/Token'){
+            response.setBody('{ "Response": { "Result": "SUCCESS", "Access_Token":" 0C6065FA997F0EC3A99846E24CCF3FD8D28362A028008E330F440FB59CB06C81943CBE82FFCFDEB0A0BF467D0CCD778913370ACF9DDB55AEF7BFE8745ABC9125CD82E163C8B25452762EEAD8A8203B2E20A454083A4FE48406876A122112C928B7253F93D0BE9B6CE48F579F63B9F15E33F8BF8D3EDAA21F6B87A0018C71C3839A0CEBEC250330E737A66538EFBA5A9DD7B07B681D2D53FC27ADBBC5EEC326EF76050105A38C3C570C949A81954D64C381C02A5C20D8C7F66EAA50EA15DC82A56D37E1F0F62182455D3D7542EB5E7604 "	} }');
+        
+        }else{
+            response.setBody('{"Response":{"Result":"SUCCESS","WsTransaction":{"Sales":[{"DocDate":"2020-08-17","DocNumber":"20200817_SR_86_1_1","DocType":"RETURN","StoreCode":"KL07-030","StoreGSTIN":"32ADSPI4618M1Z7","CustomerCode":"2629","CustomerGSTIN":null,"OrderDate":null,"OrderNumber":null,"RefDocDate":"20200816","RefDocNumber":"20200816_WM_86_1_460","TotalItems":"1","TotalQuantity":"1.000","TotalTax":"2315.126","TotalAmount":"14500.000","ROD":"0.000","Remarks":null,"BillingAddress1":"VETTUKADU","BillingAddress2":"ERAMAM","BillingAddress3":"MUPPATHADAM","BillingPinCode":"683562","BillingCityCode":null,"BillingStateCode":null,"DeliveryAddress1":"VETTUKADU","DeliveryAddress2":"ERAMAM","DeliveryAddress3":"MUPPATHADAM","DeliveryPinCode":"683562","DeliveryCityCode":null,"DeliveryStateCode":"32","UserName":"KL07-030","CreatedOn":"2020-09-08","TotalDiscount":"0.000","CustomerMobile":"8156936091","CustomerEmail":null,"BillTime":"2020-08-17 14:44:58","CurrencyCode":"INR","TotalNet":"14500.000","TotalPayment":"0.000","DocNumber2":"008612000001","CustomerType":null,"EmployeeID":null,"CustomerName":"AZEES V ","DiscountPercentage":"0.000","CGSTValue":"-1096.639","SGSTValue":"-1096.639","IGSTValue":"0.000","UTGSTValue":"0.000","CESSValue":"-121.849","TaxableValue":"12184.874","OrderStoreCode":null,"OtherDiscountAmount":"0.000","CompanyID":null,"CountryCode":"India","NexusRefCode":null,"IsCCNCreated":"1","SaleDocNumber":"1","SaleDocSeries":"SR","RefSaleDocNumber":"460","RefSaleDocSeries":"WM","AllowCredit":"0","StoreName":"WhiteMart","StoreAbbrevation":"KL07030","WSCustomerCode":"2629","AlternateCode":null,"StoreRemarks":null,"WSStoreCode":"86","SalesmanName":null,"Items":{"Item":[{"DocLineNumber":"1","SalesmanCode":null,"ProductCode":"SAG-052M081C000S200","IsSerialNoMandatory":"0","Quantity":"-1.000","FreeQuantity":"0.000","BatchDescription":null,"HSNCode":"8528.72.19","SalesPrice":"14500.000","SalesTaxCode":"0","PDiscountAmt":"0.000","PDiscountPer":"0.000","DiscountAmount":"0.000","OtherDiscountAmt":"0.000","SchemeCode":"0","SchemeDescription":null,"TaxAmount":"-2315.126","BaseValue":"-12184.874","Amount":"-14500.000000","CGST":"-1096.639","SGST":"-1096.639","IGST":"0.000","UTGST":"0.000","CESS":"-121.849","ReasonCode":"PRI","EffectiveTaxPercentage":"19.000","CGSTPercent":"9.000","SGSTPercent":"9.000","IGSTPercent":"0.000","UTGSTPercent":"0.000","CESSPercent":"1.000","UOMCode":"0","DocNumber2":"008612100001","SalesmanName":null,"UnitDescription":null,"Attribute1":null,"IsBatchNumberCompulsory":"0","IsTaxInclusive":"1","AlternateHSNCode":"8528.72.19_18.000","RateWithTax":"14500"}]},"Payments":{"Payment":[{"CustomerCode":"2629","PaymentMode":"CCN","ModeType":"INR","ModeReference":"1","ModeValue":"14500.000","Amount":"0.000","ReferenceDate":null,"IsDiscount":"0","LineNumber":"1","BillPaymentID":"8461","PaymentModeCode":"Customer Credit Note"}]}}]}}}');
+        
+        }
+        response.setStatusCode(200);
+        return response; 
+    }
+
+}

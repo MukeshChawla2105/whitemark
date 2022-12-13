@@ -1,0 +1,142 @@
+<aura:component access="global" controller="CustomerDetails">
+
+    <aura:attribute name="RecordId" type="String" description="Order Record Id"/> 
+    <aura:handler name="init" value="{!this}" action="{!c.doinit}"/>
+    <aura:attribute name="happycallSelectedvalues" type="String" />
+    <aura:attribute name="happycallFeedback" type="String" />
+    <aura:attribute name="InterestedProdSelectedvalues" type="String" />
+    <aura:attribute name="happycallFeedSelectedvalues" type="list" />
+
+    <aura:attribute name="OrderId" type="String" />Childresult
+    <aura:attribute name="Childresult" type="String" />
+
+    <aura:attribute name="HpyClOptions" type="List" />
+    <aura:attribute name="lossReasonOptions" type="List" />
+    <aura:attribute name="HappycallFeedOptions" type="List" default="[]"/> 
+    <aura:attribute name="InterestedProductOptions" type="List" />
+
+    <aura:registerEvent name="sampleCmpEvent" type="c:MessageEvent" />
+
+    <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+        aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+        <div class="slds-modal__container">
+            <!-- Modal/Popup Box Header Starts here-->
+            <header class="slds-modal__header">
+                <lightning:buttonIcon iconName="utility:close" onclick="{! c.closeModel }" alternativeText="close"
+                    variant="bare-inverse" class="slds-modal__close" />
+                <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Happy call feedback</h2>
+            </header>
+            <!--Modal/Popup Box Body Starts here-->
+            <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+
+                <lightning:card>
+
+                <!-- article class="slds-card ">
+                    <div class="slds-card__header slds-grid">
+                        <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                            <div class="slds-media__figure">
+                              <span class="slds-icon_container slds-icon-standard-account" title="account">
+                                <aura:if isTrue="{!v.ShowAccountHiglightpanel}">
+                                    <lightning:icon iconName="standard:account" alternativeText="Event" title="Event" />
+                                    <span class="slds-assistive-text ">account</span>
+                                </aura:if>
+                                <aura:if isTrue="{!v.ShowALeadHiglightpanel}">
+                                    <lightning:icon iconName="standard:lead" alternativeText="Event" title="Event" />
+                                    <span class="slds-assistive-text">Lead</span>\
+                                </aura:if>
+                                
+                              </span>
+                            </div>
+                            <div class="slds-media__body">
+                              <h2 class="slds-card__header-title">
+                                <a href="javascript:void(0);" class="slds-card__header-link slds-truncate" title="Accounts">
+                                  <span>Happy call feedback</span>
+                                </a>
+                              </h2>
+                            </div>
+                          </header>
+                    </div>
+                </article -->
+
+                <div class="slds-grid slds-wrap slds-m-around_xx-large " style="background-color:#ffffff; border-radius:5px; box-shadow: 5px 5px 15px 15px rgb(230, 228, 228);">
+                    <div class="slds-col slds-size_6-of-12 slds-p-around_large" >
+                        <span>
+                            <div class=" slds-text-heading_small">
+                                <div class="slds-grid slds-wrap">
+                                    <div class="slds-col slds-size_1-of-2">
+                                        <span class="slds-text-heading_small slds-text-title_bold">Select Happy Call Options : </span>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2" style="background-color:#c5cdf1; border-radius:5px">
+                                        <span>
+                                            <!--lightning:formattedText value="{!v.LeadDetails.Website}" title="Company" class="slds-text-heading_small slds-p-around_medium"/ >
+                                            <lightning:inputRichText value="{!v.Feedback}" placeholder="Type something interesting" class="slds-text-heading_small slds-p-around_medium"/>
+                                            <lightning:input name="input8" value="{! v.Feedback }" placeholder="type your Feedback here..." class="slds-text-heading_small slds-p-around_medium"/ -->
+                                            <!-- ui:inputTextArea aura:id="comments"  value="{!v.Feedback}" placeholder="type your Feedback here..." rows="5"/ -->
+                                            <lightning:select name="Happy Call" aura:id="option" value="{!v.happycallSelectedvalues}"  >
+                                                <option value="">--None--</option>
+                                                <aura:iteration items="{!v.HpyClOptions}" var="item">
+                                                    <option text="{!item.value}" value="{!item.key}" selected="{!item.selected}"/>
+                                                </aura:iteration>
+                                            </lightning:select>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <br/>
+
+                            <div class=" slds-text-heading_small">
+                                <div class="slds-grid slds-wrap">
+                                    <div class="slds-col slds-size_1-of-2">
+                                        <span class="slds-text-heading_small slds-text-title_bold">Interested Product In :</span>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2" style="background-color:#c5cdf1; border-radius:5px">
+                                        <span>
+                                            <lightning:select name="Happy Call" aura:id="option" value="{!v.InterestedProdSelectedvalues}" disabled="{!v.enableIntestedProduct}" >
+                                                <option value="">--None--</option>
+                                                <aura:iteration items="{!v.InterestedProductOptions}" var="item">
+                                                    <option text="{!item.value}" value="{!item.key}" selected="{!item.selected}"/>
+                                                </aura:iteration>
+                                            </lightning:select>
+                                        </span>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                            <br/>
+                            <div class=" slds-text-heading_small">
+                                <div class="slds-grid slds-wrap">
+                                    <div class="slds-col slds-size_1-of-2">
+                                        <span class="slds-text-heading_small slds-text-title_bold">Remarks :</span>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2" >
+                                         <lightning:textarea name="input1" label="Enter some text" value="{!v.happycallFeedback}"/>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+
+                        </span>
+
+                    </div>
+                    <div class="slds-col slds-size_6-of-12 slds-p-around_large">
+                        <lightning:dualListbox name="multipleOptions" 
+                           label= "Select Feedback for Happy Call" 
+                           sourceLabel="Available" 
+                           selectedLabel="Selected" 
+                           options="{!v.HappycallFeedOptions}" 
+                           value="{!v.happycallFeedSelectedvalues}"/>
+                    </div>
+                    </div>
+                </lightning:card>
+            </div>
+
+            <footer class="slds-modal__footer">
+                <lightning:button variant="neutral" label="Cancel" title="Cancel" onclick="{! c.closeModel }" />
+                <lightning:button variant="brand" label="Submit Happy Call Feedback" title="Brand action" onclick="{! c.SubmitHappyCallFeedback }"/>
+            </footer>
+        </div>
+    </section>
+    <div class="slds-backdrop slds-backdrop_open"></div>
+
+
+</aura:component>
