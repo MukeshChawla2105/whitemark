@@ -1,0 +1,93 @@
+<aura:component access="global" controller="CustomerDetails">
+
+    <aura:attribute name="OpportunityrecordId" type="String" description="Order Record Id"/> 
+    <aura:handler name="init" value="{!this}" action="{!c.doinit}"/>
+    <aura:attribute name="OppLineitemList" type="List"/>
+    <aura:registerEvent name="sampleCmpEvent" type="c:MessageEvent" />
+
+    <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+        <div class="slds-modal__container">
+            <!-- Modal/Popup Box Header Starts here-->
+            <header class="slds-modal__header">
+                <lightning:buttonIcon iconName="utility:close"
+                                      onclick="{! c.closeModel }"
+                                      alternativeText="close"
+                                      variant="bare-inverse"
+                                      class="slds-modal__close"/>
+                <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Opportunity Products</h2>
+            </header>
+            <!--Modal/Popup Box Body Starts here-->
+            <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                    <thead>
+                        <tr class="slds-line-height_reset slds-text-title_caps">
+                            <th  class="slds-is-resizable" scope="col">
+                                <div class="slds-truncate" title="Name">
+                                    Name
+                                </div>
+                            </th>
+                            <th  class="slds-is-resizable" scope="col">
+                                <div class="slds-truncate" title="Account Number">
+                                    ProductCode
+                                </div>
+                            </th>
+                            <th class="slds-is-resizable" scope="col">
+                                <div class="slds-truncate" title="Industry">
+                                    Unit Price
+                                </div>
+                            </th>
+                            <th class="slds-is-resizable" scope="col">
+                                <div class="slds-truncate" title="Phone">
+                                    Quantity
+                                </div>
+                            </th>
+                            <th scope="col">
+                                <div class="slds-truncate" title="Actions">
+                                    Total Price
+                                </div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <aura:if isTrue="{!v.OppLineitemList.length > 0}">
+                        <tbody>
+                            <aura:iteration items="{!v.OppLineitemList}" var="OLI">
+                                <tr class="slds-hint-parent">
+                                    
+                                    <th data-label="Name" scope="row">
+                                        <div class="slds-truncate" title="{!OLI.Name}">
+                                            {!OLI.Name}
+                                        </div>
+                                    </th>
+                                    <td data-label="Account Number">
+                                        <div class="slds-truncate" title="{!OLI.ProductCode}">{!OLI.ProductCode}</div>
+                                    </td>
+                                    <td data-label="Industry">
+                                        <div class="slds-truncate" title="{!OLI.UnitPrice }">{!OLI.UnitPrice }</div>
+                                    </td>
+                                    <td data-label="Phone">
+                                        <div class="slds-truncate" title="{!OLI.Quantity}">{!OLI.Quantity}</div>
+                                    </td>
+                                    <td data-label="Action">
+                                        <div class="slds-truncate" title="{!OLI.TotalPrice}">{!OLI.TotalPrice}</div>                                                                                                                
+                                    </td>
+                                    
+                                </tr>
+                            </aura:iteration>
+                        </tbody>
+                    </aura:if>
+                </table>
+            </div>
+            <!--Modal/Popup Box Footer Starts here-->
+            <footer class="slds-modal__footer">
+                <lightning:button variant="neutral"
+                                  label="Cancel"
+                                  title="Cancel"
+                                  onclick="{! c.closeModel }"/>
+            </footer>
+        </div>
+    </section>
+    <div class="slds-backdrop slds-backdrop_open"></div>
+
+
+
+</aura:component>

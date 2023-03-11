@@ -1,0 +1,198 @@
+<aura:component access="global" controller="CustomerDetails">
+
+    <aura:attribute name="RecordId" type="String" description="Order Record Id"/> 
+    <aura:handler name="init" value="{!this}" action="{!c.doinit}"/>
+    <aura:attribute name="happycallSelectedvalues" type="String" />
+    <aura:attribute name="happycallFeedback" type="String" />
+    <aura:attribute name="InterestedProdSelectedvalues" type="String" />
+    <aura:attribute name="happycallFeedSelectedvalues" type="list" />
+
+    <aura:attribute name="OrderId" type="String" />
+    <aura:attribute name="Childresult" type="String" />
+
+    <aura:attribute name="HpyClOptions" type="List" />
+    <aura:attribute name="lossReasonOptions" type="List" />
+    <aura:attribute name="HappycallFeedOptions" type="List" default="[]"/> 
+    <aura:attribute name="InterestedProductOptions" type="List" />
+
+    <aura:attribute name="EMIAmount" type="Decimal" />
+    <aura:attribute name="EMIDate" type="Date" />
+    <aura:attribute name="FEMIcallSelectedvalues" type="String" />
+    
+    <aura:attribute name="FemiCallOptions" type="List" />
+    <aura:attribute name="OrderDetails" type="Order" />
+
+    <aura:attribute name="ShowHappycallFeedbackSection" type="boolean" default="true" />
+    <aura:attribute name="ShowFemicallFeedbackSection" type="boolean" default="false" />
+
+    
+
+    <aura:registerEvent name="sampleCmpEvent" type="c:MessageEvent" />
+
+    <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+        aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+        <div class="slds-modal__container">
+            <!-- Modal/Popup Box Header Starts here-->
+            <header class="slds-modal__header">
+                <lightning:buttonIcon iconName="utility:close" onclick="{! c.closeModel }" alternativeText="close"
+                    variant="bare-inverse" class="slds-modal__close" />
+                    <aura:if isTrue="{!v.ShowHappycallFeedbackSection}">
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Happy call feedback</h2>
+                    </aura:if>
+                    <aura:if isTrue="{!v.ShowFemicallFeedbackSection}">
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">FEMI call feedback</h2>
+                    </aura:if>
+
+                
+            </header>
+            <!--Modal/Popup Box Body Starts here-->
+            <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+
+                <aura:if isTrue="{!v.ShowHappycallFeedbackSection}">
+                    <div class="slds-grid slds-wrap slds-m-around_xx-large " style="background-color:#ffffff; border-radius:5px; box-shadow: 5px 5px 15px 15px rgb(230, 228, 228);">
+                        <div class="slds-col slds-size_6-of-12 slds-p-around_large" >
+                            <span>
+                                <div class=" slds-text-heading_small">
+                                    <div class="slds-grid slds-wrap">
+                                        <div class="slds-col slds-size_1-of-2">
+                                            <span class="slds-text-heading_small slds-text-title_bold">Select Happy Call Options : </span>
+                                        </div>
+                                        <div class="slds-col slds-size_1-of-2" style="background-color:#c5cdf1; border-radius:5px">
+                                            <span>
+                                                <lightning:select name="Happy Call" aura:id="option" value="{!v.happycallSelectedvalues}"  >
+                                                    <option value="">--None--</option>
+                                                    <aura:iteration items="{!v.HpyClOptions}" var="item">
+                                                        <option text="{!item.value}" value="{!item.key}" selected="{!item.selected}"/>
+                                                    </aura:iteration>
+                                                </lightning:select>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br/>
+    
+                                <div class=" slds-text-heading_small">
+                                    <div class="slds-grid slds-wrap">
+                                        <div class="slds-col slds-size_1-of-2">
+                                            <span class="slds-text-heading_small slds-text-title_bold">Interested Product In :</span>
+                                        </div>
+                                        <div class="slds-col slds-size_1-of-2" style="background-color:#c5cdf1; border-radius:5px">
+                                            <span>
+                                                <lightning:select name="Happy Call" aura:id="option" value="{!v.InterestedProdSelectedvalues}" disabled="{!v.enableIntestedProduct}" >
+                                                    <option value="">--None--</option>
+                                                    <aura:iteration items="{!v.InterestedProductOptions}" var="item">
+                                                        <option text="{!item.value}" value="{!item.key}" selected="{!item.selected}"/>
+                                                    </aura:iteration>
+                                                </lightning:select>
+                                            </span>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                                <br/>
+                                <div class=" slds-text-heading_small">
+                                    <div class="slds-grid slds-wrap">
+                                        <div class="slds-col slds-size_1-of-2">
+                                            <span class="slds-text-heading_small slds-text-title_bold">Remarks :</span>
+                                        </div>
+                                        <div class="slds-col slds-size_1-of-2" >
+                                             <lightning:textarea name="input1" label="Enter some text" value="{!v.happycallFeedback}"/>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+    
+                            </span>
+    
+                        </div>
+                        <div class="slds-col slds-size_6-of-12 slds-p-around_large">
+                            <lightning:dualListbox name="multipleOptions" 
+                               label= "Select Feedback for Happy Call" 
+                               sourceLabel="Available" 
+                               selectedLabel="Selected" 
+                               options="{!v.HappycallFeedOptions}" 
+                               value="{!v.happycallFeedSelectedvalues}"/>
+                        </div>
+                    </div>
+
+                </aura:if>
+                <aura:if isTrue="{!v.ShowFemicallFeedbackSection}">
+                    <div class="slds-grid slds-wrap slds-m-around_xx-large " style="background-color:#ffffff; border-radius:5px; box-shadow: 5px 5px 15px 15px rgb(230, 228, 228);">
+                        <div class="slds-col slds-size_12-of-12 slds-p-around_large" >
+                            <span>
+                                <div class=" slds-text-heading_small">
+                                    <div class="slds-grid slds-wrap">
+                                        <div class="slds-col slds-size_1-of-2">
+                                            <span class="slds-text-heading_small slds-text-title_bold">Select FEMI Call Status : </span>
+                                        </div>
+                                        <div class="slds-col slds-size_1-of-2" >
+                                            <span>
+                                                <lightning:select name="FEMI Call" aura:id="option" value="{!v.FEMIcallSelectedvalues}"  >
+                                                    <option value="">--None--</option>
+                                                    <aura:iteration items="{!v.FemiCallOptions}" var="item">
+                                                        <option text="{!item.value}" value="{!item.key}" selected="{!item.selected}"/>
+                                                    </aura:iteration>
+                                                </lightning:select>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <!-- div class=" slds-text-heading_small">
+                                        <div class="slds-grid slds-wrap">
+                                            <div class="slds-col slds-size_1-of-2">
+                                                <span class="slds-text-heading_small slds-text-title_bold">EMI Amount : </span>
+                                            </div>
+                                            <div class="slds-col slds-size_1-of-2">
+                                                <span>
+                                                    <lightning:input type="number" name="seven" value="{! v.EMIAmount }" placeholder="Enter EMI amount..." />                                                    
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    
+                                    <div class=" slds-text-heading_small">
+                                        <div class="slds-grid slds-wrap">
+                                            <div class="slds-col slds-size_1-of-2">
+                                                <span class="slds-text-heading_small slds-text-title_bold">EMI Date : </span>
+                                            </div>
+                                            <div class="slds-col slds-size_1-of-2" >
+                                                <span>
+                                                    <lightning:input type="date" name="input5"  required="true" value="{!v.EMIDate}" />
+                                                    
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                    </div -->
+                                    
+                                </div>
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                </aura:if>
+
+                
+            </div>
+
+            <footer class="slds-modal__footer">
+                <lightning:button variant="neutral" label="Cancel" title="Cancel" onclick="{! c.closeModel }" />
+                <aura:if isTrue="{!v.ShowHappycallFeedbackSection}">
+                    <lightning:button variant="brand" label="Submit Happy Call Feedback" title="Brand action" onclick="{! c.SubmitHappyCallFeedback }"/>
+                </aura:if>
+                <aura:if isTrue="{!v.ShowFemicallFeedbackSection}">
+                    <lightning:button variant="brand" label="Submit FEMI Call Details" title="Brand action" onclick="{! c.SubmitFemiCallFeedback }"/>
+
+                </aura:if>
+                
+            </footer>
+        </div>
+    </section>
+    <div class="slds-backdrop slds-backdrop_open"></div>
+
+
+</aura:component>

@@ -1,0 +1,188 @@
+<template>
+    <lightning-button type="Sumbit" label="Add Products" variant="Brand" onclick={openModal}></lightning-button>
+    <template if:true={isModalOpen}>
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+            aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container" style="width:100%;max-width: 100rem;">
+                <!-- Modal/Popup Box LWC header here -->
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                        title="Close" onclick={closeModal}>
+                        <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse"
+                            size="small"></lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Add/Edit Intrested
+                        Products</h2>
+                </header>
+                <!-- Modal/Popup Box LWC body starts here -->
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <lightning-card>
+                        
+                            <div class="slds-grid slds-gutters">
+                                <div class="slds-col">
+                                    <div class="slds-clearfix">
+                                        <h2 slot="title">
+                                            <lightning-icon icon-name="standard:product" alternative-text="Event" size="medium">
+                                            </lightning-icon>
+                                            &nbsp; <b> Add/Edit Products</b> 
+                                        </h2>
+        
+                                    </div>
+
+                                </div>
+                                <div class="slds-col">
+    
+                                </div>
+                                <div class="slds-col">
+                                    <div class="slds-float_right slds-m-right_medium">
+                                        <lightning-icon icon-name="action:new" id={index} alternative-text="Add Row"
+                                            size="small" title="Add Row" onclick={addRow}>
+                                        </lightning-icon>
+                                    </div>
+    
+                                </div>
+
+                            </div>
+                            
+
+                        <!--div class="slds-grid slds-gutters">
+                            <div class="slds-col">
+
+                            </div>
+                            <div class="slds-col">
+
+                            </div>
+                            <div class="slds-col">
+                                <div class="slds-float_right slds-m-right_medium">
+                                    <lightning-icon icon-name="action:new" id={index} alternative-text="Add Row"
+                                        size="small" title="Add Row" onclick={addRow}>
+                                    </lightning-icon>
+                                </div>
+
+                            </div>
+                        </div -->
+
+
+                        <template for:each={itemList} for:item="item" for:index="index">
+                            <lightning-record-edit-form key={item.index} object-api-name="Contact">
+                                <lightning-messages> </lightning-messages>
+                                <lightning-layout size="11" multiple-rows access-key={item.id}>
+
+                                    <lightning-layout-item class="slds-size_2-of-12" padding="around-small">
+                                        <!--Smart search Dropdown-->
+                                        <!-- <c-custom-lookup-comp icon-name="standard:Product" s-object-api-name="Product2" child-prod-id={item.productId} class={item.productId}
+                                            label="Product" onlookupupdate={lookupRecord}
+                                            placeholder="Search Product here..." data-index={index}>
+                                        </c-custom-lookup-comp> -->
+
+                                        <!-- smart search End-->
+
+                                        <label class="" for="text-input-id-47">
+                                            <abbr class="slds" title="required"></abbr>Product</label>
+
+                                        <lightning-record-edit-form object-api-name="Lead">
+                                            <lightning-input-field field-name="Product__c" variant="label-hidden"
+                                                data-index={index} onchange={handleprodChange} value={item.productId}>
+                                            </lightning-input-field>
+                                        </lightning-record-edit-form>
+                                    </lightning-layout-item>
+
+                                    <lightning-layout-item class="slds-size_1-of-12" padding="around-small">
+                                        <label class="" for="text-input-id-47">
+                                            <abbr class="slds" title="required"></abbr>Quantity</label>
+                                        <div class="slds-form-element__control">
+                                            <lightning-input type="text" placeholder="Quantity" value={item.Quantity__c}
+                                                onchange={handleQuantityChange} data-index={index} id={index}>
+                                            </lightning-input>
+                                        </div>
+                                    </lightning-layout-item>
+
+                                    <lightning-layout-item class="slds-size_1-of-12" padding="around-small">
+                                        <label class="" for="text-input-id-47">
+                                            <abbr class="slds" title="required"></abbr>MRP</label>
+                                        <div class="slds-form-element__control">
+                                            <lightning-input type="text" value={item.MRP__c} disabled="true">
+                                            </lightning-input>
+                                        </div>
+                                    </lightning-layout-item>
+
+                                    <lightning-layout-item class="slds-size_2-of-12" padding="around-small">
+                                        <label class="" for="text-input-id-47">
+                                            <abbr class="slds" title="required"></abbr>Proposed MRP</label>
+                                        <div class="slds-form-element__control">
+                                            <lightning-input data-index={index} type="text"
+                                                onchange={handleProposedMRPChange} value={item.Proposed_MRP__c}>
+                                            </lightning-input>
+                                        </div>
+                                    </lightning-layout-item>
+
+                                    <lightning-layout-item class="slds-size_1-of-12" padding="around-small">
+                                        <label class="" for="text-input-id-47">
+                                            <abbr class="slds" title="required"></abbr>MOP1</label>
+                                        <div class="slds-form-element__control">
+                                            <lightning-input type="text" value={item.MOP1__c} disabled="true">
+                                            </lightning-input>
+                                        </div>
+                                    </lightning-layout-item>
+
+                                    <lightning-layout-item class="slds-size_1-of-12" padding="around-small">
+                                        <label class="" for="text-input-id-47">
+                                            <abbr class="slds" title="required"> </abbr>MOP2</label>
+                                        <div class="slds-form-element__control">
+                                            <lightning-input type="text" value={item.MOP2__c} disabled="true">
+                                            </lightning-input>
+                                        </div>
+                                    </lightning-layout-item>
+
+                                    <lightning-layout-item class="slds-size_2-of-12" padding="around-small">
+                                        <label class="" for="text-input-id-47">
+                                            <abbr class="slds" title="required"></abbr>Proposed Total</label>
+                                        <div class="slds-form-element__control">
+                                            <lightning-input type="text" value={item.Proposed_Total__c} disabled="true">
+                                            </lightning-input>
+                                        </div>
+                                    </lightning-layout-item>
+
+                                    <lightning-layout-item class="slds-size_1-of-12" padding="around-small">
+                                        <label class="" for="text-input-id-47">
+                                            <abbr class="slds" title="required"></abbr>Total</label>
+                                        <div class="slds-form-element__control">
+                                            <lightning-input type="text" value={item.total} disabled="true">
+                                            </lightning-input>
+                                        </div>
+                                    </lightning-layout-item>
+
+                                    <lightning-layout-item class="slds-size_1-of-12 slds-p-around_small slds-m-small"
+                                        padding="around-small">
+
+                                        &nbsp; &nbsp;
+                                        <lightning-icon icon-name="action:delete" access-key={item.index} id={index}
+                                            alternative-text="Delete Row" size="small" title="Delete Row"
+                                            onclick={removeRow}>
+                                        </lightning-icon>
+                                    </lightning-layout-item>
+
+                                </lightning-layout>
+
+                            </lightning-record-edit-form>
+                        </template>
+                        </br>
+                        <!-- <lightning-layout>
+                            <div class="slds-align_absolute-center">
+                                <lightning-button variant="success" onclick={handleSubmit} name="submit" label="Submit">
+                                </lightning-button>
+                            </div>
+                        </lightning-layout> -->
+                    </lightning-card>
+                </div>
+                <!-- Modal/Popup Box LWC footer starts here -->
+                <footer class="slds-modal__footer">
+                    <button class="slds-button slds-button_neutral" onclick={closeModal} title="Cancel">Cancel</button>
+                    <button class="slds-button slds-button_brand" onclick={handleSubmit} title="submit">submit</button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+</template>

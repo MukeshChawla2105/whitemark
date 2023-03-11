@@ -1,0 +1,25 @@
+.THIS .SearchButton{
+    margin-top: 18px;
+}
+
+.THIS.slds-spinner_container{  
+  z-index: 10000;
+  position: fixed;   
+}
+
+.THIS.myBtn {
+    font-size: 15px;
+}
+
+.THIS.circle {
+    height: 60px;
+    width: 60px;
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+    border-radius: 50%;
+    background: #6CB700;
+    color: white;
+    padding:-5px;
+    padding-top: 15px;
+}

@@ -1,0 +1,72 @@
+<aura:component access="global" controller="CustomerDetails">
+
+    <aura:attribute name="OpportunityrecordId" type="String" description="Order Record Id" />
+    <aura:handler name="init" value="{!this}" action="{!c.doinit}" />
+    <aura:attribute name="LossReason" type="String" />
+    <aura:attribute name="lossreasonoptionsForChild" type="List" />
+
+    <aura:registerEvent name="sampleCmpEvent" type="c:MessageEvent" />
+
+    <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+        aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+        <div class="slds-modal__container">
+            <!-- Modal/Popup Box Header Starts here-->
+            <header class="slds-modal__header">
+                <lightning:buttonIcon iconName="utility:close" onclick="{! c.closeModel }" alternativeText="close"
+                    variant="bare-inverse" class="slds-modal__close" />
+                <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Submit Loss Reason </h2>
+            </header>
+            <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <div class="slds-grid slds-wrap slds-m-around_xx-large "
+                        style="background-color:#ffffff; border-radius:5px; box-shadow: 5px 5px 15px 15px rgb(230, 228, 228);">
+                        <div class="slds-col slds-size_6-of-12 slds-p-around_large">
+                            <span>
+                                <div class=" slds-text-heading_small">
+                                    <div class="slds-grid slds-wrap">
+                                        <div class="slds-col slds-size_1-of-2">
+                                            <span class="slds-text-heading_small slds-text-title_bold">Loss Reason
+                                                :</span>
+                                        </div>
+                                        <div class="slds-col slds-size_1-of-2"
+                                            style="background-color:#c5cdf1; border-radius:5px">
+                                            <span>
+                                                <lightning:select name="Loss Reasons" aura:id="reason"
+                                                    value="{!v.LossReason}" disabled="{!v.disableLossReasonButton}">
+                                                    <option value="">--None--</option>
+                                                    <aura:iteration items="{!v.lossreasonoptionsForChild}" var="item">
+                                                        <option text="{!item.value}" value="{!item.key}"
+                                                            selected="{!item.selected}" />
+                                                    </aura:iteration>
+                                                </lightning:select>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br />
+
+
+                            </span>
+
+                        </div>
+                        <div class="slds-col slds-size_6-of-12">
+                            <span>
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+            </div>
+            <!--Modal/Popup Box Footer Starts here-->
+            <footer class="slds-modal__footer">
+                <lightning:button variant="neutral" label="Cancel" title="Cancel" onclick="{! c.closeModel }" />
+                <lightning:button variant="brand" label="Closed Lost" title="Brand action"
+                    onclick="{! c.markOpportunityasCloseLost }" />
+            </footer>
+        </div>
+    </section>
+    <div class="slds-backdrop slds-backdrop_open"></div>
+
+</aura:component>

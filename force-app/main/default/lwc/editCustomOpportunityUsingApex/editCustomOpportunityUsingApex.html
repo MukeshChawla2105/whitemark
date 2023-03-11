@@ -1,0 +1,201 @@
+<template>
+
+<template if:true={EditCardVisible}>
+    <section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-heading-01" class="slds-modal slds-fade-in-open slds-modal_medium">
+        <div class="slds-modal__container">
+            <div class="slds-modal__header">
+                <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
+                    <lightning-icon icon-name="utility:close"
+                        alternative-text="close"
+                        variant="inverse"
+                        size="small" ></lightning-icon>
+                    <span class="slds-assistive-text">Close</span>
+                </button>
+                <h1 id="modal-heading-01" class="slds-modal__title slds-hyphenate">Add/Update Products</h1>
+                <template if:true={ShowAddProductButton}>
+                    <div class="slds-float_right">
+                    <lightning-button type="Sumbit" variant="brand" label="Add Product" onclick={HandleAddProduct}></lightning-button>
+                    </div>
+                </template>
+                </div>
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                <template if:true={HandleInputShow}>
+                <lightning-card>
+                        <template if:true={FetchedOppRecord}>
+                            <p>
+                            <lightning-input type="text" placeholder="Name" label="Opportunity Name" name="oppname" value={FetchedOppRecord.Name} onchange={HandleChangedInput} ></lightning-input>
+                        <template if:true={StagePicklistValues.data}>
+                            <lightning-combobox  label="Stage" name ="stagename" value={FetchedOppRecord.StageName} placeholder="select" onchange={HandleChangedInput}
+                                options={StagePicklistValues.data.values} >
+                            </lightning-combobox>
+                        </template> 
+                    </p>
+                        <lightning-input type="Date" name ="closedatename" placeholder="Close Date" label="Close Date" value={FetchedOppRecord.CloseDate} onchange={HandleChangedInput}></lightning-input>
+                    
+
+                        </template>
+                        
+                <!--</template>-->
+            </lightning-card>
+                </template>
+                    <!-- OpportunityLineItem Show With Editable-->
+                <template if:true={HandleOppLineItemShow}>
+                        <table class="slds-table slds-table_bordered slds-table_header-fixed slds-table_resizable-cols slds-table_fixed-layout">
+                            <thead>
+                                <th class="slds-is-resizable dv-dynamic-width" scope="col" >
+                                    Name
+                                </th>
+                                <th class="slds-is-resizable dv-dynamic-width" scope="col" >
+                                    Sales price
+                                </th>
+                                <th class="slds-is-resizable dv-dynamic-width" scope="col" >
+                                    MOP
+                                </th>
+                                <th class="slds-is-resizable dv-dynamic-width" scope="col" >
+                                    Quantity
+                                </th>
+                                <th class="slds-is-resizable dv-dynamic-width" scope="col">
+                                Total Price
+                                </th>
+                              
+                            </thead>
+                            <tbody>
+                                <template for:each={FetchedOppLineItem} for:item="OppLitem">
+                                    <tr key={OppLitem.Id}>
+                                            <th  scope="col" >
+                                                <div class="slds-truncate slds-cell-wrap">
+                                                    {OppLitem.Name}
+                                                </div>
+                                            </th>
+                                            <th  scope="col">
+                                                {OppLitem.UnitPrice}
+                                            </th>
+                                            <th  scope="col">
+                                                {OppLitem.ListPrice}
+                                            </th>
+                                            <th  scope="col">
+                                                <lightning-input type="Number" placeholder="Quantity"  data-id={OppLitem.Id}  value={OppLitem.Quantity} onchange={HandleQuantityChange} required></lightning-input>
+                                            </th>
+                                            <th  scope="col">
+                                                <lightning-input type="Number" placeholder="Final Price" data-id={OppLitem.Id}  value={OppLitem.TotalPrice} onchange={HandleTotalPriceChange} required></lightning-input>
+                                            </th>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                       
+                        <!--Showing Selected Opportunity Product-->
+
+
+                        <template if:true={ShowProductData}>
+                            <br/><br/>
+                    <table class="slds-table slds-table_bordered slds-table_header-fixed slds-table_resizable-cols slds-table_fixed-layout">
+                        <thead>
+                            <th class="slds-is-resizable dv-dynamic-width" scope="col">
+                              Product Name
+                            </th>
+                            <th class="slds-is-resizable dv-dynamic-width" scope="col" >
+                              Product Code
+                            </th>
+                            <th class="slds-is-resizable dv-dynamic-width" scope="col" >
+                               Product List Price
+                            </th>
+                            <th class="slds-is-resizable dv-dynamic-width" scope="col">
+                               MOP1
+                            </th>
+                            <th class="slds-is-resizable dv-dynamic-width" scope="col" >
+                               MOP2
+                            </th>
+                            <th class="slds-is-resizable dv-dynamic-width" scope="col" title="Column 1">
+                              Quantity
+                            </th>
+                            <th class="slds-is-resizable dv-dynamic-width" scope="col" title="Column 1">
+                              Final Price
+                            </th>
+                        </thead>
+                    <tbody>
+
+                        <template for:each={SelectedProductList} for:item="prod" for:index="index">
+                            <tr key={prod.Id}>
+                                <th  scope="col">
+                                    <div  class="slds-truncate slds-cell-wrap" >{prod.Name}</div>
+                                </th>
+                                <th  scope="col">
+                                    <div  class="slds-truncate slds-cell-wrap" >{prod.ProductCode}</div>
+                                </th>
+                                <th  scope="col">
+                                    <div class="slds-truncate dv-dynamic-width" >{prod.MRP__c}</div>
+                                </th>
+                                <th  scope="col">
+                                    <div class="slds-truncate dv-dynamic-width">{prod.MOP1__c}</div>  
+                                </th>
+                                <th  scope="col">
+                                    <div class="slds-truncate dv-dynamic-width" >{prod.MOP2__c}</div>
+                                </th>
+                                <th  scope="col">
+                                    <div class="slds-truncate dv-dynamic-width" >
+                                        <lightning-input type="Number" placeholder="Quantity"  data-id={prod.Id}  value={prod.ProductQuantity__c} onchange={HandleQuantityValueChange} required></lightning-input>
+                                    </div>
+                                </th>
+                                <th  scope="col">
+                                    <div class="slds-truncate dv-dynamic-width" >
+                                        <lightning-input type="Number" placeholder="Final Price" data-id={prod.Id}  value={prod.FinalPrice__c} onchange={HandleFinalValueChange} required></lightning-input>
+                                    </div>
+                                </th>
+
+                            </tr>
+                        </template>
+                    </tbody>
+                    </table>
+                
+            </template>
+                 
+                </template>
+            
+                <template if:true={HandleProductData}>
+                    <lightning-card>
+                    <lightning-input type="text" placeholder="Search Product" value={HandleSearchValue} onchange={HandleProductSearchNextAdd}></lightning-input>
+                    <!--lightning-datatable
+                            key-field="Id"
+                            data={ProductData}
+                            columns={ProductColumns}
+                            show-row-number-column="true"
+                            onrowselection={getSelectedValue}>
+                    </lightning-datatable -->
+                
+
+                <template if:true={showSpinner}>
+                    <div>
+                        <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+                    </div>
+                </template>
+                <template if:false={showSpinner}>
+                    <lightning-datatable
+                            key-field="Id"
+                            data={ProductData}
+                            columns={ProductColumns}
+                            show-row-number-column="true"
+                            onrowselection={getSelectedValue}>
+                    </lightning-datatable>
+                </template>
+            </lightning-card>
+                </template>
+
+                
+                </div>
+                <div class="slds-modal__footer">
+                <template if:true={HandleFirstNext}>
+                    <lightning-button type="Sumbit" variant="brand" label="Next" onclick={HandleFirstButton}></lightning-button>
+                </template>
+                <template if:true={HandleSecondNext}>
+                    <lightning-button type="Sumbit" variant="brand" label="Next" onclick={HandleSecondButton}></lightning-button>
+                </template>
+                <template if:true={HandleUpdateButton}>
+                    <lightning-button type="Sumbit" variant="brand" label="Update" onclick={HandleThirdButton}></lightning-button>
+                </template> 
+                </div>
+        </div>
+    </section>
+    <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+</template>
+</template>

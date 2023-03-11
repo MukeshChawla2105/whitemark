@@ -1,0 +1,316 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickAction" 
+                access="global" controller="QueryInventoryFromSearchBar">
+    
+    
+    <aura:attribute name="Inventorylist" type="List" />
+    <aura:attribute name="key" type="String" />
+    <aura:attribute name="SelectedValue" type="String" />
+    <aura:attribute name="SearchPrductName" type="String" />
+    <!-- <aura:handler name="init" value="{!this}" action="{!c.doInit}" /> -->
+    
+    <!-- ################### For Frenchie Inventory Pagination############################ -->
+    
+    <aura:attribute name="CompleteFranchieInventoryList" type="list" />
+    <aura:attribute name="FranchieListTobeDisplayed" type="list" />
+    <aura:attribute name="FranchieListRecordsize" type="integer" />
+    
+    <aura:attribute name="FranchieListRecordPageNumber" type="integer" default="1"/>
+    <aura:attribute name="FranchieListRecordLastIndex" type="integer" />
+    <aura:attribute name="FranchieListRecordFirstIndex" type="integer" />
+    <aura:attribute name="FranchieListRecordTotalPages" type="integer" default="0"/>
+    <aura:attribute name="NoFranchiseInventoryList" type="boolean" default="false"/>
+    
+    <!-- ################### For Warehouse Inventory Pagination############################ -->
+    
+    <aura:attribute name="CompleteWarehouseInventoryList" type="list" />
+    <aura:attribute name="WarehouseListTobeDisplayed" type="list" />
+    <aura:attribute name="WarehouseListRecordsize" type="integer" />
+    
+    <aura:attribute name="WarehouseListRecordPageNumber" type="integer" default="1"/>
+    <aura:attribute name="WarehouseListRecordLastIndex" type="integer" />
+    <aura:attribute name="WarehouseListRecordFirstIndex" type="integer" />
+    <aura:attribute name="WarehouseListRecordTotalPages" type="integer" default="0"/>
+    <aura:attribute name="NoWarehoueInventoryList" type="boolean" default="false"/>
+    <aura:attribute name="ShowPriceBookModal" type="boolean" default="false"/>
+    
+    <aura:attribute name="priceBookEntryList" type="list"/>
+    
+    <div class="slds-box slds-theme_shade">
+        
+        <div class="slds-m-around_xx-large">
+            <div class="slds-grid slds-wrap">
+                <div class="slds-col slds-size_11-of-12 slds-p-right_small slds-p-left_small">
+                    <span>
+                        <lightning:input type="text" name="searchKey" label="Enter" aura:id="searchKey" onchange="{!c.searchKeyChange}" placeholder="Search" />                   
+                    </span>
+                </div>
+                <div class="slds-col slds-size_1-of-12 slds-p-right_small slds-p-left_small slds-p-top_large">
+                    <span>
+                        <lightning:button variant="brand" label="Search" title="Brand action" onclick="{! c.searchKeyChange }" />
+                    </span>
+                </div>
+            </div>
+        </div>
+        
+        <aura:iteration items="{!v.Inventorylist}" var="item">
+            <!-- #############################For WareHouses Inventory Details ################################## -->
+            
+            <div class="slds-m-around_xx-large">
+                
+                <div class="slds-page-header slds-grid slds-wrap styleClass" >
+                    <div class="slds-col slds-size_5-of-6">
+                        <div class="slds-page-header__row">
+                            <div class="slds-page-header__col-title">
+                                <div class="slds-media">
+                                    <div class="slds-media__body slds-p-top_xx-small slds-p-left_small">
+                                        <div class="slds-page-header__name">
+                                            <div class="slds-page-header__name-title">
+                                                <h1>
+                                                    <span class="slds-page-header__title slds-truncate slds-p-top_small fontSize" title="All Inventory in all Warehouses">{!v.SearchPrductName} in all Warehouses</span>
+                                                </h1>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        
+                    </div>
+                    <div class="slds-col slds-size_1-of-6">
+                        
+                        <!-- <aura:if isTrue="{!v.WarehouseListRecordTotalPages > 1}"> -->
+                        <div class="slds-clearfix">
+                            <div class="slds-text-align_right" style="height:60px;">
+                                <div class="slds-float_right slds-p-top_small">            
+                                    <lightning:button disabled="{!v.WarehouseListRecordPageNumber == 1}" variant="brand" aura:id="prevPage" label="Previous" onclick="{!c.handlePrevWarehouseInventory}" />            
+                                    <lightning:button disabled="{!v.WarehouseListRecordPageNumber == v.WarehouseListRecordTotalPages}" aura:id="nextPage" variant="brand" label="Next" onclick="{!c.handleNextWarehouseInventory}"/>
+                                </div>
+                                <!-- <p class="slds-page-header__title">{!v.RecordStart}-{!v.RecordEnd} of {!v.TotalRecords} | Page {!v.PageNumber} of {!v.TotalPages}</p> -->
+                            </div>
+                        </div>
+                        
+                        <!-- </aura:if> -->
+                        
+                    </div>
+                    
+                </div>
+                
+                <lightning:layout horizontalAlign="spread" multipleRows = "True">
+                    <aura:iteration items="{!v.WarehouseListTobeDisplayed}" var="WareHouseItems">
+                        <lightning:layoutItem padding="around-small" size="4" >
+                            <lightning:card variant="Narrow"  iconName="custom:custom16" >
+                                
+                                <aura:set attribute="title">
+                                    <div class ="link" style ="cursor: pointer;"  onclick="{!c.RedirectToProductPage}" data-target="{!WareHouseItems.Warehouse__r.Id}">
+                                        {!WareHouseItems.Warehouse__r.Name}<span class="slds-assistive-text" ></span>
+                                    </div>
+                                </aura:set>
+                                
+                                <aura:set attribute="actions">
+                                    <lightning:button label="Show Price Book" title = "{!WareHouseItems.Product__c}" onclick= "{!c.ShowPriceBook}" />
+                                </aura:set>
+                                
+                                <aura:set attribute="footer">
+                                    <div class="slds-clearfix">
+                                        <div class="slds-grid slds-gutters ">
+                                            <div class="slds-text-align_left slds-col slds-size_2-of-3">
+                                                Location : {!WareHouseItems.Warehouse__r.Location__c}
+                                            </div>
+                                            <div class="slds-text-align_right slds-col slds-size_1-of-3">
+                                                <span class="slds-badge .slds-theme_success">Available Quantity : 
+                                                    <strong>{!WareHouseItems.Available_Quantity__c}</strong>
+                                                </span>
+                                            </div> 
+                                        </div>
+                                        
+                                    </div>
+                                </aura:set>
+                                
+                                <p class="slds-p-horizontal_small slds-text-heading_small">
+                                    Product name : {!WareHouseItems.Product__r.Name}
+                                </p>
+                                <p class="slds-p-horizontal_small slds-text-heading_small">
+                                    Available Quantity : {!WareHouseItems.Available_Quantity__c}
+                                </p>
+                                <p class="slds-p-horizontal_small slds-text-heading_small">
+                                    WareHouse Location : {!WareHouseItems.Warehouse__r.Location__c}
+                                </p>
+                            </lightning:card>
+                            
+                        </lightning:layoutItem>
+                    </aura:iteration>
+                </lightning:layout>
+                <aura:if isTrue="{!(empty(v.WarehouseListTobeDisplayed))}">
+                    <div style=" border-radius: 10px; width:1600px; height:50px; font-size: 25px; margin-top: 25px;" class="slds-align_absolute-center slds-notify slds-notify_alert slds-alert_warning" role="alert" >
+                        
+                        There is no Inventory by this product Name in any Warehouse.
+                    </div>
+                </aura:if>
+                
+            </div>
+            
+            <!-- #############################For Franchies Inventory Details ################################## -->
+            <div class="slds-m-around_xx-large">
+                
+                <div class="slds-page-header slds-grid slds-wrap styleClass">
+                    
+                    <div class="slds-col slds-size_5-of-6">
+                        <div class="slds-page-header__row">
+                            <div class="slds-page-header__col-title">
+                                <div class="slds-media">
+                                    <div class="slds-media__body slds-p-top_xx-small slds-p-left_small">
+                                        <div class="slds-page-header__name">
+                                            <div class="slds-page-header__name-title">
+                                                <h1>
+                                                    <span class="slds-page-header__title slds-truncate slds-p-top_small" title="All Inventory in all Franchisee">{!v.SearchPrductName} in all Franchisee</span>
+                                                </h1>
+                                                
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    
+                    <div class="slds-col slds-size_1-of-6">
+                        
+                        <aura:if isTrue="{!v.FranchieListRecordTotalPages > 1}">
+                            <div class="slds-clearfix">
+                                <div class="slds-text-align_right" style="height:60px;">
+                                    <div class="slds-float_right slds-p-top_small">            
+                                        <lightning:button disabled="{!v.FranchieListRecordPageNumber == 1}" variant="brand" aura:id="prevPage" label="Previous" onclick="{!c.handlePrevFranchieInventory}" />            
+                                        <lightning:button disabled="{!v.FranchieListRecordPageNumber == v.FranchieListRecordTotalPages}" aura:id="nextPage" variant="brand" label="Next" onclick="{!c.handleNextFranchieInventory}"/>
+                                    </div>
+                                    <!-- <p class="slds-page-header__title">{!v.RecordStart}-{!v.RecordEnd} of {!v.TotalRecords} | Page {!v.PageNumber} of {!v.TotalPages}</p> -->
+                                </div>
+                            </div>
+                        </aura:if>
+                    </div>
+                </div>
+                
+                <lightning:layout horizontalAlign="spread" multipleRows = "True">
+                    <aura:iteration items="{!v.FranchieListTobeDisplayed}" var="FranchiesItems">
+                        
+                        <lightning:layoutItem padding="around-small" size="4">
+                            
+                            <lightning:card variant="Narrow"  iconName="custom:custom16">
+                                
+                                <aura:set attribute="title">
+                                    
+                                    <div class ="link" style ="cursor: pointer;"  onclick="{!c.RedirectToProductPage}" data-target="{!FranchiesItems.Franchisee__r.Id}">
+                                        {!FranchiesItems.Franchisee_Name__c}<span class="slds-assistive-text" ></span>
+                                    </div>
+                                    
+                                </aura:set>
+                                
+                                <aura:set attribute="actions">
+                                    <lightning:button label="Show Price Book" title = "{!FranchiesItems.Product__c}" onclick= "{!c.ShowPriceBook}" />
+                                </aura:set>
+                                
+                                <aura:set attribute="footer">
+                                    <div class="slds-grid slds-gutters ">
+                                        <div class="slds-text-align_left slds-col slds-size_2-of-3">
+                                            Location :  {!FranchiesItems.Inventory__r.Franchisee__r.Location__c}
+                                        </div>
+                                        <div class="slds-text-align_right slds-col slds-size_1-of-3">
+                                            <span class="slds-badge .slds-theme_success">Available Quantity:
+                                                <strong>{!FranchiesItems.Available_Quantity__c}</strong>
+                                            </span>
+                                        </div> 
+                                    </div>
+                                    
+                                </aura:set>
+                                
+                                <p class="slds-p-horizontal_small slds-text-heading_small">
+                                    Product name : {!FranchiesItems.Product__r.Name}
+                                </p>
+                                <p class="slds-p-horizontal_small slds-text-heading_small">
+                                    Available Quantity : {!FranchiesItems.Available_Quantity__c}
+                                </p>
+                                <p class="slds-p-horizontal_small slds-text-heading_small">
+                                    Franchisee Location : {!FranchiesItems.Inventory__r.Franchisee__r.Location__c}
+                                </p>
+                            </lightning:card>
+                        </lightning:layoutItem>
+                        
+                    </aura:iteration>
+                </lightning:layout>
+                
+                <aura:if isTrue="{!(empty(v.FranchieListTobeDisplayed))}">
+                    <div style=" border-radius: 10px; width:1600px; height:50px;  font-size: 25px; margin-top: 25px;" class="slds-align_absolute-center slds-notify slds-notify_alert slds-alert_warning" role="alert" >
+                        
+                        There is no Inventory by this product Name in any Franchise.
+                    </div>
+                </aura:if>
+                
+            </div>
+            
+        </aura:iteration>
+        
+        <!-- ################################# Open Modal to Show Price Book ####################### -->
+        
+        <aura:if isTrue="{!v.ShowPriceBookModal}">
+            
+            <!-- Modal/Popup Box starts here-->
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <!-- Modal/Popup Box Header Starts here-->
+                    <header class="slds-modal__header">
+                        <lightning:buttonIcon iconName="utility:close"
+                                              onclick="{! c.closeModel }"
+                                              alternativeText="close"
+                                              variant="bare-inverse"
+                                              class="slds-modal__close"/>
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Price Book List</h2>
+                    </header>
+                    <!--Modal/Popup Box Body Starts here-->
+                    <table class="slds-table slds-table--bordered slds-table--cell-buffer" role="grid">
+                        <thead>  
+                            <tr class="slds-text-title--caps">
+                                
+                                <th scope="col">
+                                    <div class="slds-truncate" title="Price Book Name">Price Book name</div>
+                                </th>
+                                <th scope="col">
+                                    <div class="slds-truncate" title="MOP">MOP</div>
+                                </th>
+                                
+                                <th scope="col">
+                                    <div class="slds-truncate" title="MRP__c">MRP</div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>        
+                            <aura:iteration items="{!v.priceBookEntryList}" var="PBE">
+                                <tr>
+                                    
+                                    <th scope="row">
+                                        <div class="slds-truncate" title="{!PBE.Pricebook2Id.Name}">{!PBE.Pricebook2.Name}</div>
+                                    </th>
+                                    <td>
+                                        <div class="slds-truncate" title="{!PBE.UnitPrice}">{!PBE.UnitPrice}</div>
+                                    </td>
+                                    <th scope="row">
+                                        <div class="slds-truncate" title="{!PBE.MRP__c}">{!PBE.MRP__c}</div>
+                                    </th>
+                                    
+                                </tr>
+                            </aura:iteration>
+                        </tbody>
+                    </table>
+                    <!--Modal/Popup Box Footer Starts here-->
+                    <footer class="slds-modal__footer">
+                        <lightning:button variant="neutral"
+                                          label="Cancel"
+                                          title="Cancel"
+                                          onclick="{! c.closeModel }"/>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </aura:if>
+    </div>
+</aura:component>

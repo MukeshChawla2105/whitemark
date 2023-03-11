@@ -1,0 +1,162 @@
+<aura:component access="global" controller="CustomerDetails">
+    
+    <aura:attribute name="activity" type="object" description="For Single Activity Store"/> 
+    <aura:attribute name="lstActivity" type="object" description="For Single Activity Store"/>
+    <aura:attribute name="gatherInfo" type="boolean"/>
+    <aura:attribute name="viewInfo" type="boolean"/>
+    <aura:attribute name="disablebutton" type="boolean"/>
+    
+    <aura:attribute name="filledDescription" type="string" default=""/>
+    <aura:handler name="init" value="{!this}" action="{!c.myAction}"/>
+    
+    <li>
+        <div class="isExpendable slds-timeline__item_expandable slds-timeline__item_task" aura:id="expId">
+            <div class="slds-media">
+                <div class="slds-media__figure">
+                    <button class="slds-button slds-button_icon"
+                            onclick="{!c.toggleActivity}"
+                            title="test"
+                            aria-controls="task-item-base">
+                        <lightning:icon iconName="utility:switch" 
+                                        size="x-small"
+                                        class="slds-button__icon slds-timeline__details-action-icon"/>
+                        
+                    </button>
+                    <div class="slds-icon_container" title="task">
+                        <lightning:icon iconName="standard:task" size="small"/>
+                    </div>
+                </div>
+                <div class="slds-media__body">
+                    <div class="slds-grid slds-grid_vertical-align-center slds-truncate_container_75 slds-no-space">
+                        <h3 class="slds-truncate" title="{!v.activity.Subject}">
+                            <strong ><a target="_blank" href="" >{!v.activity.Subject}</a>
+                                
+                                
+                                <aura:if isTrue="{!v.activity.Is_Remarketing_Activity__c}">
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <lightning:icon iconName="utility:reassign" size="small" title="x-small size" />
+                                </aura:if>
+                                
+                                <aura:if isTrue="{!v.activity.Recording_Available__c}">
+                                    &nbsp;&nbsp;&nbsp;
+                                    <lightning:icon iconName="action:call" onclick="{!c.showRecordingModal}" alternativeText="Click to Call" size="x-small" title="x-small size" />
+                                </aura:if>
+                            </strong>
+                        </h3>
+                    </div>
+                    
+                    <article class="slds-box slds-timeline__item_details slds-theme_shade slds-m-top_x-small slds-m-horizontal_xx-small"
+                             id="task-item-base" aria-hidden="true">
+                        <ul class="slds-list_horizontal slds-wrap">
+                            <li class="slds-grid slds-grid_vertical slds-size_2-of-2 slds-p-bottom_small">
+                                
+                                <span class="slds-text-title slds-p-bottom_x-small slds-text-title_bold">Assigned To</span>
+                                
+                                <span class="slds-text-body_medium slds-truncate" title="{!v.activity.Who.Name}">{!v.activity.Owner.Name}</span>
+                                
+                            </li>
+                            <li class="slds-grid slds-grid_vertical slds-size_2-of-2 slds-p-bottom_small">
+                                
+                                <span class="slds-text-title slds-p-bottom_x-small slds-text-title_bold">Status</span>
+                                
+                                <span class="slds-text-body_medium slds-truncate" title="{!v.activity.Who.Name}">{!v.activity.Status}</span>
+                                
+                            </li>
+                            <li class="slds-grid slds-grid_vertical slds-size_2-of-2 slds-p-bottom_small">
+                                
+                                <span class="slds-text-title slds-p-bottom_x-small slds-text-title_bold">Priority</span>
+                                
+                                <span class="slds-text-body_medium slds-truncate" title="{!v.activity.Who.Name}">{!v.activity.Priority}</span>
+                                
+                            </li>
+                            <li class="slds-grid slds-grid_vertical slds-size_2-of-2 slds-p-bottom_small">
+                                <aura:if isTrue="{!v.activity.Status == 'Completed'}">
+                                    <lightning:button variant="brand" label="View Comments" title="Brand action" onclick="{! c.openModel }" />
+                                </aura:if>
+                            </li>
+                            <li class="slds-grid slds-grid_vertical slds-size_2-of-2 slds-p-bottom_small">
+                                <aura:if isTrue="{!v.activity.Status != 'Completed'}">
+                                    <span class="slds-text-title slds-p-bottom_x-small slds-text-title_bold">Mark as complete</span>
+                                    <lightning:button variant="brand" label="Complete" title="Brand action" disabled="{!v.disablebutton}" onclick="{! c.TaskCompleted }" />
+                                </aura:if>                           
+                            </li>
+                            <li class="slds-grid slds-grid_vertical slds-size_2-of-2 slds-p-bottom_small">
+                                <aura:if isTrue="{!v.activity.Call_End_Time__c != null}">
+                                    <span class="slds-text-title slds-p-bottom_x-small slds-text-title_bold">Start time</span>
+                                    <ui:outputDateTime value="{!v.activity.Call_End_Time__c}"/>
+                                </aura:if>                           
+                            </li>
+                            
+                        </ul>
+                        
+                    </article>
+                </div>
+            </div>
+            
+            
+        </div>
+    </li>
+    
+    <aura:if isTrue="{!v.gatherInfo}">
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <!-- Modal/Popup Box Header Starts here-->
+                <header class="slds-modal__header">
+                    <lightning:buttonIcon iconName="utility:close"
+                                          onclick="{! c.closeModel }"
+                                          alternativeText="close"
+                                          variant="bare-inverse"
+                                          class="slds-modal__close"/>
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">{!v.label}</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_small" id="modal-content-id-1">
+                    <div class="slds-text-heading_medium">
+                        Type your notes here : 
+                    </div>
+                    <br/>
+                    <lightning:inputRichText   value="{!v.activity.Description}" disabled="{!v.isEditable}"/>
+                    <br/>
+                </div>
+                <footer class="slds-modal__footer">
+                    <lightning:button variant="neutral"
+                                      label="Cancel"
+                                      title="Cancel"
+                                      onclick="{! c.closeModel }"/>
+                    <lightning:button variant="brand"
+                                      label="OK"
+                                      title="OK"
+                                      onclick="{!c.updateTask}"/>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </aura:if>
+    
+    <aura:if isTrue="{!v.viewInfo}">
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <!-- Modal/Popup Box Header Starts here-->
+                <header class="slds-modal__header">
+                    <lightning:buttonIcon iconName="utility:close"
+                                          onclick="{! c.closeModel }"
+                                          alternativeText="close"
+                                          variant="bare-inverse"
+                                          class="slds-modal__close"/>
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">{!v.label}</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_small" id="modal-content-id-1">
+                     <br/>
+                    <lightning:inputRichText   value="{!v.activity.Description}" disabled="true"/>
+                    <br/>
+                </div>
+                <footer class="slds-modal__footer">
+                    <lightning:button variant="neutral"
+                                      label="Cancel"
+                                      title="Cancel"
+                                      onclick="{! c.closeModel }"/>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </aura:if>
+</aura:component>

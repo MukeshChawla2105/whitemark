@@ -1,0 +1,2205 @@
+<aura:component
+                implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction"
+                access="global" controller="CustomerDetails">
+    
+    <aura:html tag="style">
+        .slds-modal__container{
+        width: 80% !important;
+        max-width: 80% !important;
+        }
+    </aura:html>
+    
+    <aura:attribute name="HashCodeToQueryPhoneList" type="String" />
+    <aura:attribute name="ListOfPhonetask" type="List" />
+    <aura:attribute name="ShowPhoneNumberList" type="boolean" />
+    <aura:attribute name="ShowparticularCustomerDetail" type="boolean" /> 
+    <aura:attribute name="CustomerPhoneNumber" type="String" />   
+    <aura:attribute name="AgentuniqueID" type="String" /> 
+    
+    
+    <aura:attribute name="AccountDetails" type="Account" />
+    <aura:attribute name="AccountHistory" type="List" />
+    <aura:attribute name="AccountContact" type="List" />
+    <aura:attribute name="Accountorders" type="List" />
+    <aura:attribute name="AccountOpportunities" type="List" />
+    <aura:attribute name="AccounFirstLetters" type="String" />
+    
+    <aura:attribute name="enquiryType" type="String[]" default="Customer,Service,New Franchisee"/>
+    <aura:attribute name="status" type="String[]" default="Unqualified,New,Working,Nurturing,Qualified,Service Issue,Lost"/>
+    <aura:attribute name="lossReasons" type="String[]" default="No Answer,Invalid Number,Not Interested,Others"/>
+    <aura:attribute name="gender" type="String[]" default="Male,Female"/>
+    <aura:attribute name="Religion" type="String[]" default="Hindu,Muslim,Christian"/>
+
+    
+    <aura:attribute name="LeadDetails" type="Lead" />
+    <aura:attribute name="LeadHistory" type="List" />
+    <aura:attribute name="productList" type="List" />
+    <aura:attribute name="LeadFirstLetters" type="String" /> 
+    
+    <aura:attribute name="ShowAccountHiglightpanel" type="boolean" default="false" />
+    <aura:attribute name="ShowALeadHiglightpanel" type="boolean" />
+    <aura:attribute name="ShowPastOrder" type="boolean" />
+    <aura:attribute name="ShowPastEnquiry" type="boolean" />
+    <aura:attribute name="ShowNextBestAction" type="boolean" />
+    <aura:attribute name="ShowCallLogs" type="boolean" />
+    <aura:attribute name="ShowRecordHistory" type="boolean" />
+
+    <aura:attribute name="ShowLeadCallLogs" type="boolean" />
+    <aura:attribute name="ShowProductList" type="boolean" />
+    <aura:attribute name="ShowLeadHistory" type="boolean" />
+    <aura:attribute name="showLeadtaskList" type="boolean" />
+    
+    <aura:attribute name="ShowCustomerdetails" type="boolean" />
+    <aura:attribute name="ShowProductdetails" type="boolean" />
+    <aura:attribute name="ShowCallScriptdetails" type="boolean" />
+    <aura:attribute name="ShowInventorydetails" type="boolean" />
+    <aura:attribute name="isdisabled" type="boolean" default="true" />
+    
+    <aura:attribute name="isdisabledLead" type="boolean" default="true" />
+    <!-- ########################################## Global Search Attributes #####################################-->
+    
+    <aura:attribute name="showSearchResults" type="Boolean" default="false" />
+    <aura:attribute name="emptyWrapper" type="Boolean" default="false" />
+    <aura:attribute name="searchKey" type="String" />
+    <aura:attribute name="accountList" type="List" default="Account[]" />
+    <aura:attribute name="accountColumns" type="List" />
+    <aura:attribute name="contactList" type="List" default="Contact[]" />
+    <aura:attribute name="contactColumns" type="List" />
+    <aura:attribute name="oppList" type="List" default="Opportunity[]" />
+    <aura:attribute name="oppColumns" type="List" />
+    <aura:attribute name="leadList" type="List" default="Lead[]" />
+    <aura:attribute name="leadColumns" type="List" />
+    <aura:attribute name="options" type="List" />
+    <aura:attribute name="taskList" type="List" />
+    <aura:attribute name="CallLogList" type="List" />
+    <aura:attribute name="LeadCallLogList" type="List" />
+    <aura:attribute name="selectedValue" type="String" /> 
+    
+    
+    <!-- ########################################## Feedback Section #####################################-->
+    
+    <aura:attribute name="showSubmitButton" type="boolean" default="true" />
+    <aura:attribute name="showCancelFeedbackButton" type="boolean" default="false" />
+    <aura:attribute name="showEditButton" type="boolean" default="false" />
+    <aura:attribute name="isdisabledFeedback" type="boolean" default="false" />
+    <aura:attribute name="disablesubmitFeedbackbutton" type="boolean" default="false" />
+
+    <aura:attribute name="Feedback" type="String" />
+    <aura:attribute name="Followupdate" type="date" />
+    <aura:attribute name="InterestedProduct" type="String" />
+    <aura:attribute name="LossReason" type="String" />
+    <aura:attribute name="disableLossReasonButton" type="boolean" default="true" />
+    <aura:attribute name="happycallSelectedvalues" type="String" />
+    <aura:attribute name="InterestedProdSelectedvalues" type="String" />
+    <aura:attribute name="happycallFeedSelectedvalues" type="list" />
+    
+    <aura:attribute name="HpyClOptions" type="List" />
+    <aura:attribute name="lossReasonOptions" type="List" />
+    <aura:attribute name="HappycallFeedOptions" type="List" default="[]"/>
+    <aura:attribute name="InterestedProductOptions" type="List" />
+    
+    <aura:attribute name="ShowMarkasOppClosedLostModal" type="boolean" default="false" />
+    <aura:attribute name="SelectedoppRecId" type="String"/> 
+    
+    
+    <!-- ########################################## Create Oportunity #####################################-->
+    <aura:attribute name="AccountRecordId" type="String" />
+    <aura:attribute name="LeadRecId" type="String" />
+
+    <aura:attribute name="disablebutton" type="boolean" />
+    <aura:attribute name="ShowCreateOppButton" type="boolean" />
+    <aura:attribute name="ShowOppCloseLostButton" type="boolean" default="false" />
+    
+    
+    <!-- ########################################## Global Search Modal Popup #####################################-->
+    <aura:attribute name="isModalOpen" type="boolean" default="false"/>
+    
+    <aura:attribute name="showSaveButtons" type="boolean"/> 
+    <aura:attribute name="showLeadSaveButtons" type="boolean"/>
+    <!-- ########################################## Show Create opportunity Modal Popup #####################################-->
+    <aura:attribute name="ShowCreateOppModalPopUp" type="boolean" />
+    
+    <!-- ########################################## happy call Feedback #####################################-->
+    <aura:attribute name="HappycallFeedbacklist" type="List" default="[]" description="Happy call feedback Picklist Values"/>
+    <aura:attribute name="selectedHappycallFeedbacklist" type="List" default="[]" description="Selected Happy call feedback Picklist Values"/>
+    <aura:attribute name="enableIntestedProduct" type="boolean" default="true" />
+    
+    <aura:attribute name="ShowEditOrderForHappyCallFeedback" type="boolean" default="false" />
+    <aura:attribute name="SelectedOrderRecId" type="String"/> 
+    <aura:attribute name="Childresponse" type="String"/> 
+    
+    
+    <aura:attribute name="ShowEditOppWithOLIModal" type="boolean" default="false" /> 
+    <aura:attribute name="ShowOppProductsModal" type="boolean" default="false" />
+    <aura:attribute name="ShowOrderProductsModal" type="boolean" default="false" />
+    
+    
+    
+    
+    
+    <!-- ############################################## For Setting Width  ###############################################-->
+    <aura:attribute name="width" type="String"/>
+    <lightning:flexipageRegionInfo width="{!v.width}"/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:handler name="sampleCmpEvent" event="c:MessageEvent" action="{!c.parentComponentEvent}"/>
+    
+    <!-- ================================== Navigation bar ===================================================== -->
+    <header class="slds-modal__header">
+        
+        <div class="slds-grid slds-gutters" style="background-color:#162088;padding:.5%;width: 99.9%;margin-left: .1%;font-size:20px;">
+            <div class="slds-size_2-of-12">
+                <span>
+                    <img src="{!$Resource.Whitemart_logo}" alt="User avatar" />
+                </span>
+            </div>
+            <div class="slds-size_1-of-12">
+                <span>
+                    <!-- h2 style="color: white;font-size:20px; font-weight: bold;"></h2 -->
+                </span>
+            </div>
+            <div class="slds-size_7-of-12">
+                <span>
+                    <aura:if isTrue="{!v.ShowparticularCustomerDetail}">
+                        <div class="my-custom-background slds-p-top_large">
+                            <lightning:button label="Home" variant="inverse" onclick="{! c.showHomePage }" />
+                            <lightning:button label="Product" variant="inverse" onclick="{! c.showProductPage }" />
+                            <lightning:button label="Call Script" variant="inverse" onclick="{! c.showCallScriptPage }" />
+                            <lightning:button label="Inventory Search" variant="inverse" onclick="{! c.showInventorySearchPage }" />
+                            <lightning:button label="Search" class="myBtn" variant="inverse" onclick="{! c.ShowGlobalSearchOption }" />
+                        </div>
+                    </aura:if>
+                </span>
+            </div>
+            <div class="slds-size_1-of-12">
+            </div>
+            <div class="slds-size_1-of-12 slds-p-top_xxx-small">
+                <aura:if isTrue="{!v.ShowparticularCustomerDetail}">
+                    <aura:if isTrue="{!v.ShowAccountHiglightpanel}">
+                        <div class="slds-text-color_inverse" style="height: 80px; width: 80px; display: table-cell; text-align: center; vertical-align: middle; border-radius: 50%; background: #6CB700; color: white;  font-size: 35px;">
+                            {!v.AccounFirstLetters}
+                        </div>
+                    </aura:if>
+                    <aura:if isTrue="{!v.ShowALeadHiglightpanel}">
+                        <div class="slds-text-color_inverse" style="height: 80px; width: 80px; display: table-cell; text-align: center; vertical-align: middle; border-radius: 50%; background: #6CB700; color: white;  font-size: 35px;">
+                            {!v.LeadFirstLetters}
+                        </div>
+                    </aura:if>
+                </aura:if>
+            </div>
+        </div>
+        
+    </header>
+    
+    <!-- =================================== NavBar Ends here ================================================ -->
+    
+    <!-- ================================== Global Search option ===================================================== -->
+    <aura:if isTrue="{!v.ShowparticularCustomerDetail}">
+        <aura:if isTrue="{!v.isModalOpen}">	
+            <c:GlobalSearch agentId="{!v.AgentuniqueID}"></c:GlobalSearch>
+            <!--section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <lightning:buttonIcon iconName="utility:close"
+                                              onclick="{! c.closeModel }"
+                                              alternativeText="close"
+                                              variant="bare-inverse"
+                                              class="slds-modal__close"/>
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Global Search</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        
+                        <div>
+                            <div class="slds-m-around_medium">
+                                <div class="slds-grid slds-wrap">
+                                    <div class="slds-col slds-size_1-of-12"></div>
+                                    <div class="slds-col slds-size_2-of-12 slds-p-right_small slds-p-left_small slds-p-top_large">
+                                        <span>
+                                            <lightning:select name="colorId" label="Select an Object:" aura:id="colorId" value="{!v.selectedValue}">
+                                                <aura:iteration items="{!v.options}" var="option">
+                                                    <option text="{!option.label}" value="{!option.id}" />
+                                                </aura:iteration>
+                                            </lightning:select>
+                                        </span>
+                                    </div>
+                                    <div class="slds-col slds-size_7-of-12 slds-p-right_small slds-p-left_small slds-p-top_large">
+                                        <span class="slds-p-top_large">
+                                            <lightning:input name="searchKey" placeholder="Enter Search Key" value="{!v.searchKey}"
+                                                             onchange="{!c.search}" class="slds-p-top_medium"/>
+                                            
+                                        </span>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-12 slds-p-right_small slds-p-left_small slds-p-top_large">
+                                        <span>
+                                            <lightning:button variant="brand" label="Search" title="Search" onclick="{!c.search}"
+                                                              class="SearchButton" />
+                                        </span>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-12"></div>
+                                    
+                                </div>
+                            </div>
+                            
+                            <aura:if isTrue="{!v.showSearchResults}">
+                                <lightning:layout multipleRows="true">
+                                    <lightning:layoutItem padding="around-small" size="12">
+                                        <aura:if isTrue="{!v.accountList.length>0}">
+                                            <span style="font-size:16px;font-weight:bold">Account</span>
+                                            <lightning:datatable keyField="id" data="{!v.accountList}" columns="{!v.accountColumns}"
+                                                                 hideCheckboxColumn="true" />
+                                        </aura:if>
+                                        
+                                    </lightning:layoutItem>
+                                    <lightning:layoutItem padding="around-small" size="12">
+                                        <aura:if isTrue="{!v.contactList.length>0}">
+                                            <span style="font-size:16px;font-weight:bold">Contact</span>
+                                            <lightning:datatable keyField="id" data="{!v.contactList}" columns="{!v.contactColumns}"
+                                                                 hideCheckboxColumn="true" />
+                                        </aura:if>
+                                    </lightning:layoutItem>
+                                    <lightning:layoutItem padding="around-small" size="12">
+                                        <aura:if isTrue="{!v.oppList.length>0}">
+                                            <span style="font-size:16px;font-weight:bold">Opportunity</span>
+                                            <lightning:datatable keyField="id" data="{!v.oppList}" columns="{!v.oppColumns}"
+                                                                 hideCheckboxColumn="true" />
+                                        </aura:if>
+                                    </lightning:layoutItem>
+                                    <lightning:layoutItem padding="around-small" size="12">
+                                        <aura:if isTrue="{!v.leadList.length>0}">
+                                            <span style="font-size:16px;font-weight:bold">Lead</span>
+                                            <lightning:datatable keyField="id" data="{!v.leadList}" columns="{!v.leadColumns}"
+                                                                 hideCheckboxColumn="true" />
+                                            
+                                        </aura:if>
+                                        
+                                    </lightning:layoutItem>
+                                </lightning:layout>
+                            </aura:if>
+                            <aura:if isTrue="{!v.emptyWrapper}">
+                                <lightning:card>
+                                    <div style=" border-radius: 10px; width:1200px; height:50px; font-size: 25px; margin-top: 25px;"
+                                         class="slds-align_absolute-center slds-notify slds-notify_alert slds-alert_warning" role="alert">
+                                        
+                                        No Result Found!!!!!
+                                        
+                                    </div>
+                                </lightning:card>
+                            </aura:if>
+                        </div>
+                        
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <lightning:button variant="neutral"
+                                          label="Cancel"
+                                          title="Cancel"
+                                          onclick="{! c.closeModel }"/>
+                        <lightning:button variant="brand"
+                                          label="OK"
+                                          title="OK"
+                                          onclick="{!c.submitDetails}"/>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div -->
+            
+        </aura:if>
+        
+        <aura:if isTrue="{!v.ShowCustomerdetails}">
+            <aura:if isTrue="{!v.ShowAccountHiglightpanel}">
+                <div style="border: 5px solid #162088; " class="slds-m-around_small ">
+                    
+                    <div style="background-color:rgb(255, 255, 255); border-radius:5px" class="slds-m-around_small slds-p-bottom_small slds-m-bottom_small">
+                        
+                        <div class="slds-clearfix"> 
+                            <div class="slds-float_right">
+                                <p>
+                                    <c:createOpportunityAndOppLineItem AccrecID ="{!v.AccountRecordId}"/>
+                                </p>
+                            </div>                            
+                        </div>
+                        <br/>
+                        <div>
+                            <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                                
+                                <thead>
+                                    <tr class="slds-line-height_reset slds-text-title_caps">
+                                        <th  class="slds-is-resizable" scope="col">
+                                            <div class="slds-truncate" title="Name">
+                                                Title
+                                            </div>
+                                        </th>
+                                        <th  class="slds-is-resizable" scope="col">
+                                            <div class="slds-truncate" title="Account Number">
+                                                Company
+                                            </div>
+                                        </th>
+                                        <th class="slds-is-resizable" scope="col">
+                                            <div class="slds-truncate" title="Industry">
+                                                Email
+                                            </div>
+                                        </th>
+                                        <th class="slds-is-resizable" scope="col">
+                                            <div class="slds-truncate" title="Phone">
+                                                Phone
+                                            </div>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody >
+                                    <tr class="slds-line-height_reset slds-text-title_caps">
+                                        <th data-label="Name" scope="row">
+                                            <div class="slds-truncate" >
+                                                <b>
+                                                    {!v.AccountDetails.Name}
+                                                </b>
+                                            </div>
+                                        </th>
+                                        <th data-label="Name" scope="row">
+                                            <div class="slds-truncate" >
+                                                <b>
+                                                    {!v.AccountDetails.Company}
+                                                </b>
+                                            </div>
+                                        </th>
+                                        <th data-label="Name" scope="row">
+                                            <div class="slds-truncate" >
+                                                <b>
+                                                    {!v.AccountDetails.Email__c}
+                                                </b>
+                                            </div>
+                                        </th>
+                                        <th data-label="Name" scope="row">
+                                            <div class="slds-truncate" >
+                                                <b>
+                                                    {!v.AccountDetails.Phone}
+                                                </b>
+                                            </div>
+                                        </th>
+                                    </tr>
+                                </tbody>
+                                
+                            </table>
+                        </div>
+                        
+                        
+                        
+                        
+                    </div>
+                    
+                    
+                </div>
+            </aura:if>
+            
+            <aura:if isTrue="{!v.ShowALeadHiglightpanel}">
+                <div style="border: 5px solid #162088;" class="slds-m-around_small ">
+                    <!-- lightning:card title="Lead" iconName="action:new_person_account" -->
+                    <div style="background-color:rgb(255, 255, 255); border-radius:5px" class="slds-m-around_small slds-p-bottom_small slds-m-bottom_small">
+                        <div class="slds-clearfix"> 
+                            <div class="slds-float_right">
+                                <p>
+                                    <c:productIntrestComponent leadId ="{!v.LeadRecId}"/>
+                                </p>
+                            </div>
+                            
+                        </div>
+                        <br/>
+                        <div>
+                            <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                            
+                                <thead>
+                                    <tr class="slds-line-height_reset slds-text-title_caps">
+                                        <th  class="slds-is-resizable" scope="col">
+                                            <div class="slds-truncate" title="Name">
+                                                Name
+                                            </div>
+                                        </th>
+                                        <th  class="slds-is-resizable" scope="col">
+                                            <div class="slds-truncate" title="Account Number">
+                                                Phone
+                                            </div>
+                                        </th>
+                                        <th class="slds-is-resizable" scope="col">
+                                            <div class="slds-truncate" title="Industry">
+                                                Email
+                                            </div>
+                                        </th>
+                                        <th class="slds-is-resizable" scope="col">
+                                            <div class="slds-truncate" title="Phone">
+                                                Company
+                                            </div>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody >
+                                    <tr class="slds-line-height_reset slds-text-title_caps">
+                                        <th data-label="Name" scope="row">
+                                            <div class="slds-truncate" >
+                                                <b>
+                                                    {!v.LeadDetails.Name}
+                                                </b>
+                                            </div>
+                                        </th>
+                                        <th data-label="Name" scope="row">
+                                            <div class="slds-truncate" >
+                                                <b>
+                                                    {!v.LeadDetails.Phone_formatted__c}
+                                                </b>
+                                            </div>
+                                        </th>
+                                        <th data-label="Name" scope="row">
+                                            <div class="slds-truncate" >
+                                                <b>
+                                                    {!v.LeadDetails.Email}
+                                                </b>
+                                            </div>
+                                        </th>
+                                        <th data-label="Name" scope="row">
+                                            <div class="slds-truncate" >
+                                                <b>
+                                                    {!v.LeadDetails.Company}
+                                                </b>
+                                            </div>
+                                        </th>
+                                    </tr>
+                                </tbody>
+                                
+                            </table>
+
+                        </div>
+                        
+                        <!--lightning:layout multipleRows="true">
+                                <lightning:layoutItem flexibility="auto, no-grow" padding="around-small" size="1">
+                                    <div class="header-column">
+                                        <p class="field-title" title="Title">Title</p>
+                                        <p>{!v.LeadDetails.Name}</p>
+                                    </div>
+                                </lightning:layoutItem>
+                                <lightning:layoutItem flexibility="auto, no-grow" padding="around-small" size="1">
+                                    <div class="header-column">
+                                        <p class="field-title" title="Company">Phone</p>
+                                        <p>{!v.LeadDetails.Phone_formatted__c}</p>
+                                    </div>
+                                </lightning:layoutItem>
+                                <lightning:layoutItem flexibility="auto, no-grow" padding="around-small" size="1">
+                                    <div class="header-column">
+                                        <p class="field-title" title="Phone">Email</p>
+                                        <p>{!v.LeadDetails.Email}</p>
+                                    </div>
+                                </lightning:layoutItem>
+                                <lightning:layoutItem flexibility="auto, no-grow" padding="around-small" size="1">
+                                    <div class="header-column">
+                                        <p class="field-title" title="Email">Franchisee</p>
+                                        <p>{!v.LeadDetails.Franchisee_Name__c}</p>
+                                    </div>
+                                </lightning:layoutItem>
+                                <lightning:layoutItem flexibility="auto, no-grow" padding="around-small" size="2">
+                                </lightning:layoutItem>
+                                <lightning:layoutItem flexibility="auto, no-grow" padding="around-small" size="2">
+                                    
+                                </lightning:layoutItem>
+                                <lightning:layoutItem flexibility="auto, no-grow" padding="around-small" size="2">
+                                    
+                                </lightning:layoutItem>
+                                <lightning:layoutItem flexibility="auto, no-grow" padding="around-small" size="2">
+                                </lightning:layoutItem>
+                            </lightning:layout -->
+                        
+                    </div>
+                    
+                    <!-- /lightning:card -->
+                </div>
+                
+            </aura:if>
+            
+            
+            
+            <div class="slds-m-around_small" style="border: 5px solid #162088;">
+                <lightning:card>
+                    <article class="slds-card ">
+                        <div class="slds-card__header slds-grid slds-wrap">
+                            <!--header class="slds-media slds-media_center slds-has-flexi-truncate" -->
+                            <div class="slds-col slds-size_1-of-2" style="display:inline; float:left;">
+                                <div class="slds-p-top_small slds-p-left_x-small">
+                                    <div class="slds-media__figure" style="display:inline; float:left;">
+                                        <span class="slds-icon_container slds-icon-standard-account" title="account">
+                                            <aura:if isTrue="{!v.ShowAccountHiglightpanel}">
+                                                <lightning:icon iconName="standard:account" alternativeText="Event" title="Event" />
+                                                <span class="slds-assistive-text ">account</span>
+                                            </aura:if>
+                                            <aura:if isTrue="{!v.ShowALeadHiglightpanel}">
+                                                <lightning:icon iconName="standard:lead" alternativeText="Event" title="Event" />
+                                                <span class="slds-assistive-text">Lead</span>\
+                                            </aura:if>
+                                            
+                                        </span>
+                                    </div>
+                                    <div class="slds-media__body" style="display:inline; float:left;">
+                                        <h2 class="slds-card__header-title">
+                                            <a href="javascript:void(0);" class="slds-card__header-link slds-truncate" title="Accounts">
+                                                <span>
+                                                    <b>
+                                                        CUSTOMER DETAILS
+                                                    </b>
+                                                </span>
+                                            </a>
+                                        </h2>
+                                    </div>
+                                </div>
+                                
+
+                            </div>
+                            <div class="slds-col slds-size_1-of-2">
+                                <div class=" slds-p-around_medium slds-float_right">
+                                    <aura:if isTrue="{!v.ShowAccountHiglightpanel}" >
+                                        <button class="slds-button slds-button_brand" onclick="{!c.editDetails}">EDIT DETAILS</button>
+                                    </aura:if>
+                                    <aura:if isTrue="{!v.ShowALeadHiglightpanel}" >
+                                        <button class="slds-button slds-button_brand" onclick="{!c.editLeadDetails}">EDIT DETAILS</button>
+                                    </aura:if>
+                                </div>
+
+                            </div>
+                                
+                            <!--/header -->
+                        </div>
+                    </article>
+                    
+                    
+                    <!-- div class="slds-grid slds-wrap slds-m-around_xx-large " -->
+                        <lightning:layout multipleRows="true">
+                            <lightning:layoutItem size="7" padding="around-small">
+                                <div class="slds-p-around_medium" style="background-color:#ffffff; box-shadow: 5px 5px 15px 15px rgb(230, 228, 228); border-radius:5px;" >
+                                    <span>
+                                        <div class="slds-grid slds-wrap slds-p-around_medium">
+                                            <div class="slds-col slds-size_2-of-2 ">
+                                                <aura:if isTrue="{!v.ShowAccountHiglightpanel}">
+                                                    
+                                                    <div class="slds-grid slds-wrap">
+                                                        <div class="slds-col slds-size_1-of-3">
+                                                            <!-- button class="slds-button slds-button_brand" disabled="true" style="width:50%"><b>NAME</b></button -->
+                                                            <div style="font-size: 15px; text-align: right; padding-right: 30px; padding-top:5px;">
+                                                                <span>
+                                                                    Name    : 
+                                                                </span>
+                                                             </div>
+                                                        </div>
+                                                        <div class="slds-col slds-size_2-of-3">
+                                                            <lightning:input name="input2" value="{!v.AccountDetails.Name}" disabled="true"/>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <br/>
+                                                    
+                                                    <div class="slds-grid slds-wrap">
+                                                        <div class="slds-col slds-size_1-of-3">
+                                                            <!-- button class="slds-button slds-button_brand" disabled="true" style="width:50%"><b>Alternate Phone</b></button -->
+                                                            <div style="font-size: 15px; text-align: right; padding-right: 30px; padding-top:5px;">
+                                                                <span>
+                                                                    Alternate Phone    : 
+                                                                </span>
+                                                             </div>
+                                                            
+                                                            
+                                                        </div>
+                                                        <div class="slds-col slds-size_2-of-3">
+                                                            <lightning:input name="input2" value="{!v.AccountDetails.Alternate_Phone__c}" disabled="{!v.isdisabled}"/>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <br/>
+                                                    <div class="slds-grid slds-wrap">
+                                                        <div class="slds-col slds-size_1-of-3">
+                                                            <!-- button class="slds-button slds-button_brand" disabled="true" style="width:50%"><b>Alternate Name</b></button -->
+                                                            <div style="font-size: 15px; text-align: right; padding-right: 30px; padding-top:5px;">
+                                                                <span>
+                                                                    Alternate Name    : 
+                                                                </span>
+                                                             </div>
+                                                            
+                                                        </div>
+                                                        <div class="slds-col slds-size_2-of-3">
+                                                            <lightning:input name="input2" value="{!v.AccountDetails.Alternate_Name__c}" disabled="{!v.isdisabled}"/>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <br/>
+                                                    <div class="slds-grid slds-wrap">
+                                                        <div class="slds-col slds-size_1-of-3">
+                                                            <!-- button class="slds-button slds-button_brand" disabled="true" style="width:50%"><b>PHONE</b></button -->
+                                                            <div style="font-size: 15px; text-align: right; padding-right: 30px; padding-top:5px;">
+                                                                <span>
+                                                                    Phone    : 
+                                                                </span>
+                                                             </div>
+                                                        </div>
+                                                        <div class="slds-col slds-size_2-of-3">
+                                                            <lightning:input name="input2" value="{!v.AccountDetails.Phone}" disabled="true"/>
+                                                        </div>
+                                                    </div>
+                                                    <br/>
+                                                    <div class="slds-grid slds-wrap">
+                                                        <div class="slds-col slds-size_1-of-3">
+                                                            <!--button class="slds-button slds-button_brand" disabled="true" style="width:50%"><b>Agnet Assigned</b></button -->
+                                                            <div style="font-size: 15px; text-align: right; padding-right: 30px; padding-top:5px;">
+                                                                <span>
+                                                                    Agent Assigned    : 
+                                                                </span>
+                                                             </div>
+                                                        </div>
+                                                        <div class="slds-col slds-size_2-of-3">
+                                                            <lightning:input name="input2" value="{!v.AccountDetails.Handling_Agent__r.First_Name__c}" disabled="true"/>
+                                                        </div>
+                                                    </div>
+                                                    <br/>
+                                                    
+                                                    <div class="slds-grid slds-wrap">
+                                                        <div class="slds-col slds-size_1-of-3">
+                                                            <!--button class="slds-button slds-button_brand" disabled="true" style="width:50%"><b>EMAIL</b></button -->
+                                                            <div style="font-size: 15px; text-align: right; padding-right: 30px; padding-top:5px;">
+                                                                <span>
+                                                                    Email    : 
+                                                                </span>
+                                                             </div>
+                                                        </div>
+                                                        <div class="slds-col slds-size_2-of-3">
+                                                            <lightning:input name="input2" value="{!v.AccountDetails.PersonEmail}" disabled="{!v.isdisabled}"/>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <br/>
+                                                    
+                                                    <div class="slds-grid slds-wrap">
+                                                        <div class="slds-col slds-size_1-of-3">
+                                                            <!-- button class="slds-button slds-button_brand" disabled="true" style="width:50%"><b>Franchise Name</b></button -->
+                                                            <div style="font-size: 15px; text-align: right; padding-right: 30px; padding-top:5px;">
+                                                                <span>
+                                                                    Franchise Name    : 
+                                                                </span>
+                                                             </div>
+                                                            
+                                                        </div>
+                                                        <div class="slds-col slds-size_2-of-3">
+                                                            <lightning:input name="input2" value="{!v.AccountDetails.Franchisee__r.Name}" disabled="true"/>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <br/>
+                                                    <div class="slds-grid slds-wrap">
+                                                        <div class="slds-col slds-size_1-of-3">
+                                                            <!-- button class="slds-button slds-button_brand" disabled="true" style="width:50%"><b>Franchise Name(By Agent)</b></button -->
+                                                            <div style="font-size: 15px; text-align: right; padding-right: 30px; padding-top:5px;">
+                                                                <span>
+                                                                    Franchise Name(By Agent)    : 
+                                                                </span>
+                                                             </div>
+                                                        </div>
+                                                        <div class="slds-col slds-size_2-of-3">
+                                                            <lightning:input name="input2" value="{!v.AccountDetails.Franchisee_Name_Agent_Input__c}" disabled="{!v.isdisabled}"/>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <br/>
+                                                    <div class="slds-grid slds-wrap">
+                                                        <div class="slds-col slds-size_1-of-3">
+                                                            <!-- button class="slds-button slds-button_brand" disabled="true" style="width:50%"><b>Shipping Address</b></button -->
+                                                            <div style="font-size: 15px; text-align: right; padding-right: 30px; padding-top:5px;">
+                                                                <span>
+                                                                    Shipping Address   : 
+                                                                </span>
+                                                             </div>
+                                                        </div>
+                                                        <div class="slds-col slds-size_2-of-3">
+                                                            <!--lightning:input name="input2" disabled="true">{!v.AccountDetails.ShippingStreet}, {!v.AccountDetails.ShippingCity}, {!v.AccountDetails.ShippingState}, {!v.AccountDetails.ShippingCountry}, {!v.AccountDetails.ShippingPostalCode}</lightning:input -->
+                                                            <lightning:inputAddress aura:id="myaddress" 
+                                                                                    streetLabel="Street" 
+                                                                                    cityLabel="City" 
+                                                                                    countryLabel="Country"
+                                                                                    provinceLabel="State"
+                                                                                    postalCodeLabel="PostalCode"
+                                                                                    street="{!v.AccountDetails.ShippingStreet}"
+                                                                                    city="{!v.AccountDetails.ShippingCity}"
+                                                                                    country="{!v.AccountDetails.ShippingCountry}"
+                                                                                    province="{!v.AccountDetails.ShippingState}"
+                                                                                    postalCode="{!v.AccountDetails.ShippingPostalCode}"
+                                                                                    disabled="true" />
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <br/>
+                                                    <div class="slds-grid slds-wrap">
+                                                        <div class="slds-col slds-size_1-of-3">
+                                                            <!--button class="slds-button slds-button_brand" disabled="true" style="width:50%"><b>Gender</b></button --> 
+                                                            <div style="font-size: 15px; text-align: right; padding-right: 30px; padding-top:5px;">
+                                                                <span>
+                                                                    Gender   : 
+                                                                </span>
+                                                             </div>
+                                                        </div>
+                                                        <div class="slds-col slds-size_2-of-3">
+                                                            <lightning:select name="select" value="{!v.AccountDetails.Gender__pc}" disabled="{!v.isdisabled}">
+                                                                    <aura:iteration items="{!v.gender}" var="color">
+                                                                        <option text="{!color}"></option>
+                                                                    </aura:iteration>
+                                                                </lightning:select>
+                                                        </div>
+                                                    </div>
+                                                    <br/>
+                                                    <div class="slds-grid slds-wrap">
+                                                        <div class="slds-col slds-size_1-of-3">
+                                                            <!--button class="slds-button slds-button_brand" disabled="true" style="width:50%"><b>Occupation</b></button -->
+                                                            <div style="font-size: 15px; text-align: right; padding-right: 30px; padding-top:5px;">
+                                                                <span>
+                                                                    Occupation   : 
+                                                                </span>
+                                                             </div>
+                                                        </div>
+                                                        <div class="slds-col slds-size_2-of-3">
+                                                            <lightning:input name="input2" value="{!v.AccountDetails.Occupation__pc}" disabled="{!v.isdisabled}"/>
+                                                        </div>
+                                                    </div>
+                                                    <br/>
+                                                    <div class="slds-grid slds-wrap">
+                                                        <div class="slds-col slds-size_1-of-3">
+                                                            <!-- button class="slds-button slds-button_brand" disabled="true" style="width:50%"><b>Religion </b></button -->
+                                                            <div style="font-size: 15px; text-align: right; padding-right: 30px; padding-top:5px;">
+                                                                <span>
+                                                                    Religion   : 
+                                                                </span>
+                                                             </div>
+                                                        </div>
+                                                        <div class="slds-col slds-size_2-of-3">
+                                                            <lightning:select name="select" value="{!v.AccountDetails.Religion__pc}" disabled="{!v.isdisabled}">
+                                                                    <aura:iteration items="{!v.Religion}" var="color">
+                                                                        <option text="{!color}"></option>
+                                                                    </aura:iteration>
+                                                                </lightning:select>
+                                                        </div>
+                                                    </div>
+                                                    <br/>
+                                                    <div class="slds-grid slds-wrap">
+                                                        <div class="slds-col slds-size_1-of-3">
+                                                            <!--button class="slds-button slds-button_brand" disabled="true" style="width:50%"><b>Date Of Birth</b></button -->
+                                                            <div style="font-size: 15px; text-align: right; padding-right: 30px; padding-top:5px;">
+                                                                <span>
+                                                                    Date Of Birth   : 
+                                                                </span>
+                                                             </div>
+                                                        </div>
+                                                        <div class="slds-col slds-size_2-of-3">
+                                                            <lightning:input type="date" name="input2" value="{!v.AccountDetails.Date_of_Birth__pc}" disabled="{!v.isdisabled}"/>
+                                                        </div>
+                                                    </div>
+                                                    <br/>
+                                                    <div class="slds-grid slds-wrap">
+                                                        <div class="slds-col slds-size_1-of-3">
+                                                            <!-- button class="slds-button slds-button_brand" disabled="true" style="width:50%"><b>Wedding anniversary</b></button -->
+                                                            <div style="font-size: 15px; text-align: right; padding-right: 30px; padding-top:5px;">
+                                                                <span>
+                                                                    Wedding anniversary   : 
+                                                                </span>
+                                                             </div>
+                                                        </div>
+                                                        <div class="slds-col slds-size_2-of-3">
+                                                            <lightning:input type="date" name="input2" value="{!v.AccountDetails.Wedding_Anniversary__pc}" disabled="{!v.isdisabled}"/>
+                                                        </div>
+                                                    </div>
+                                                    <br/>
+                                                    <aura:if isTrue="{!v.showSaveButtons}">
+                                                        <div class="slds-grid slds-wrap slds-align_absolute-center" style="margin-right:25%">
+                                                            <button class="slds-button slds-button_brand" onclick="{!c.saveDetails}" ><b>SAVE</b></button>
+                                                            <button class="slds-button slds-button_brand" onclick="{!c.cancelDetails}"><b>CANCEL</b></button>
+                                                        </div>
+                                                    </aura:if>
+                                                </aura:if>
+                                                <aura:if isTrue="{!v.ShowALeadHiglightpanel}">
+                                                    <div class=" slds-text-heading_small">
+                                                        <div class="slds-grid slds-wrap">
+                                                            <div class="slds-col slds-size_1-of-3">
+                                                                <!-- button class="slds-button slds-button_brand" disabled="true" style="width:70%"><b>Lead Name :</b></button -->
+                                                                <div style="font-size: 15px; text-align: right; padding-right: 30px; padding-top:5px;">
+                                                                    <span>
+                                                                        Lead Name   : 
+                                                                    </span>
+                                                                 </div>
+                                                            </div>
+                                                            <div class="slds-col slds-size_2-of-3" style="background-color:#c5cdf1; border-radius:5px">
+                                                                <lightning:input name="input2" value="{!v.LeadDetails.Name}" disabled="{!v.isdisabledLead}"/>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <br/>
+                                                    <div class=" slds-text-heading_small">
+                                                        <div class="slds-grid slds-wrap">
+                                                            <div class="slds-col slds-size_1-of-3">
+                                                                <!-- button class="slds-button slds-button_brand" disabled="true" style="width:70%"><b>Lead Source :</b></button -->
+                                                                <div style="font-size: 15px; text-align: right; padding-right: 30px; padding-top:5px;">
+                                                                    <span>
+                                                                        Lead Source   : 
+                                                                    </span>
+                                                                 </div>
+                                                            </div>
+                                                            <div class="slds-col slds-size_2-of-3" style="background-color:#c5cdf1; border-radius:5px">
+                                                                <lightning:input name="input2" value="{!v.LeadDetails.LeadSource}" disabled="true"/>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <br/>
+                                                    <div class=" slds-text-heading_small">
+                                                        <div class="slds-grid slds-wrap">
+                                                            <div class="slds-col slds-size_1-of-3">
+                                                                <!--button class="slds-button slds-button_brand" disabled="true" style="width:70%"><b>Enquiry Type :</b></button -->
+                                                                <div style="font-size: 15px; text-align: right; padding-right: 30px; padding-top:5px;">
+                                                                    <span>
+                                                                        Enquiry Type   : 
+                                                                    </span>
+                                                                 </div>
+                                                            </div>
+                                                            <div class="slds-col slds-size_2-of-3" style="background-color:#c5cdf1; border-radius:5px">
+                                                                <lightning:select name="select" value="{!v.LeadDetails.Enquiry_Type__c}" disabled="{!v.isdisabledLead}">
+                                                                    <aura:iteration items="{!v.enquiryType}" var="color">
+                                                                        <option text="{!color}"></option>
+                                                                    </aura:iteration>
+                                                                </lightning:select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <br/>
+                                                    <div class=" slds-text-heading_small">
+                                                        <div class="slds-grid slds-wrap">
+                                                            <div class="slds-col slds-size_1-of-3">
+                                                                <!-- button class="slds-button slds-button_brand" disabled="true" style="width:70%"><b>Franchisee Name :</b></button -->
+                                                                <div style="font-size: 15px; text-align: right; padding-right: 30px; padding-top:5px;">
+                                                                    <span>
+                                                                        Franchisee Name   : 
+                                                                    </span>
+                                                                 </div>
+                                                            </div>
+                                                            <div class="slds-col slds-size_2-of-3" style="background-color:#c5cdf1; border-radius:5px">
+                                                                <lightning:input name="input2" value="{!v.LeadDetails.Franchisee_Name__c}" disabled="{!v.isdisabledLead}"/>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <br/>
+                                                    <div class=" slds-text-heading_small">
+                                                        <div class="slds-grid slds-wrap">
+                                                            <div class="slds-col slds-size_1-of-3">
+                                                                <!--button class="slds-button slds-button_brand" disabled="true" style="width:70%"><b>Fb Campaign Name :</b></button -->
+                                                                <div style="font-size: 15px; text-align: right; padding-right: 30px; padding-top:5px;">
+                                                                    <span>
+                                                                        Fb Campaign Name   : 
+                                                                    </span>
+                                                                 </div>
+                                                            </div>
+                                                            <div class="slds-col slds-size_2-of-3" style="background-color:#c5cdf1; border-radius:5px">
+                                                                <lightning:input name="input2" value="{!v.LeadDetails.Facebook_Campign_Name__c}" disabled="true"/>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <br/>
+                                                    <div class=" slds-text-heading_small">
+                                                        <div class="slds-grid slds-wrap">
+                                                            <div class="slds-col slds-size_1-of-3">
+                                                                <!--button class="slds-button slds-button_brand" disabled="true" style="width:70%"><b>Product Interested  :</b></button -->
+                                                                <div style="font-size: 15px; text-align: right; padding-right: 30px; padding-top:5px;">
+                                                                    <span>
+                                                                        Campiagm Product Name    : 
+                                                                    </span>
+                                                                 </div>
+                                                            </div>
+                                                            <div class="slds-col slds-size_2-of-3" style="background-color:#c5cdf1; border-radius:5px">
+                                                                <lightning:input name="input2" value="{!v.LeadDetails.Campaign_Product_Name__c}" disabled="true"/>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <br/>
+                                                    <div class=" slds-text-heading_small">
+                                                        <div class="slds-grid slds-wrap">
+                                                            <div class="slds-col slds-size_1-of-3">
+                                                                <!-- button class="slds-button slds-button_brand" disabled="true" style="width:70%"><b>Lead Assigned To:</b></button -->
+                                                                <div style="font-size: 15px; text-align: right; padding-right: 30px; padding-top:5px;">
+                                                                    <span>
+                                                                        Lead Assigned To    : 
+                                                                    </span>
+                                                                 </div>
+                                                            </div>
+                                                            <div class="slds-col slds-size_2-of-3" style="background-color:#c5cdf1; border-radius:5px">
+                                                                <lightning:input name="input2" value="{!v.LeadDetails.Handling_Agent__r.First_Name__c}" disabled="true"/>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <br/>
+                                                    
+                                                    <div class=" slds-text-heading_small">
+                                                        <div class="slds-grid slds-wrap">
+                                                            <div class="slds-col slds-size_1-of-3">
+                                                                <!-- button class="slds-button slds-button_brand" disabled="true" style="width:70%"><b>Status :</b></button -->
+                                                                <div style="font-size: 15px; text-align: right; padding-right: 30px; padding-top:5px;">
+                                                                    <span>
+                                                                        Status    : 
+                                                                    </span>
+                                                                 </div>
+                                                            </div>
+                                                            
+                                                            <div class="slds-col slds-size_2-of-3" style="background-color:#c5cdf1; border-radius:5px">
+                                                                <lightning:select name="select" value="{!v.LeadDetails.Status}" disabled="{!v.isdisabledLead}">
+                                                                    <aura:iteration items="{!v.status}" var="color">
+                                                                        <option text="{!color}"></option>
+                                                                    </aura:iteration>
+                                                                </lightning:select>
+                                                            </div>
+                                                            
+                                                        </div>
+                                                    </div>
+                                                    <br/>
+                                                    
+                                                    <div class=" slds-text-heading_small">
+                                                        <div class="slds-grid slds-wrap">
+                                                            <div class="slds-col slds-size_1-of-3">
+                                                                <!-- button class="slds-button slds-button_brand" disabled="true" style="width:70%"><b>Occupation :</b></button -->
+                                                                <div style="font-size: 15px; text-align: right; padding-right: 30px; padding-top:5px;">
+                                                                    <span>
+                                                                        Occupation    : 
+                                                                    </span>
+                                                                 </div>
+                                                            </div>
+                                                            <div class="slds-col slds-size_2-of-3" style="background-color:#c5cdf1; border-radius:5px">
+                                                                <lightning:input name="email" type="email" value="{!v.LeadDetails.Occupation__c}" disabled="{!v.isdisabledLead}"/>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <br/>
+                                                    <div class=" slds-text-heading_small">
+                                                        <div class="slds-grid slds-wrap">
+                                                            <div class="slds-col slds-size_1-of-3">
+                                                                <!-- button class="slds-button slds-button_brand" disabled="true" style="width:70%"><b>Email :</b></button -->
+                                                                <div style="font-size: 15px; text-align: right; padding-right: 30px; padding-top:5px;">
+                                                                    <span>
+                                                                        Email    : 
+                                                                    </span>
+                                                                 </div>
+                                                            </div>
+                                                            <div class="slds-col slds-size_2-of-3" style="background-color:#c5cdf1; border-radius:5px">
+                                                                <lightning:input name="email" type="email" value="{!v.LeadDetails.Email}" disabled="{!v.isdisabledLead}"/>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <br/>
+                                                    <div class=" slds-text-heading_small">
+                                                        <div class="slds-grid slds-wrap">
+                                                            <div class="slds-col slds-size_1-of-3">
+                                                                <!-- button class="slds-button slds-button_brand" disabled="true" style="width:70%"><b>Loss Reason:</b></button -->
+                                                                <div style="font-size: 15px; text-align: right; padding-right: 30px; padding-top:5px;">
+                                                                    <span>
+                                                                        Loss Reason    : 
+                                                                    </span>
+                                                                 </div>
+                                                            </div>
+                                                            <div class="slds-col slds-size_2-of-3" style="background-color:#c5cdf1; border-radius:5px">
+                                                                <lightning:select name="select" value="{!v.LeadDetails.Loss_Reason__c}" disabled="{!v.isdisabledLead}">
+                                                                    <aura:iteration items="{!v.lossReasons}" var="color">
+                                                                        <option text="{!color}"></option>
+                                                                    </aura:iteration>
+                                                                </lightning:select>
+                                                            </div>
+                                                            
+                                                        </div>
+                                                    </div>
+                                                    <br/>
+                                                    <div class=" slds-text-heading_small">
+                                                        <div class="slds-grid slds-wrap">
+                                                            <div class="slds-col slds-size_1-of-3">
+                                                                <!-- button class="slds-button slds-button_brand" disabled="true" style="width:70%"><b>Religion :</b></button -->
+                                                                <div style="font-size: 15px; text-align: right; padding-right: 30px; padding-top:5px;">
+                                                                    <span>
+                                                                        Religion    : 
+                                                                    </span>
+                                                                 </div>
+                                                            </div>
+                                                            <div class="slds-col slds-size_2-of-3" style="background-color:#c5cdf1; border-radius:5px">
+                                                                <lightning:input name="input2" value="{!v.LeadDetails.Religion__c}" disabled="{!v.isdisabledLead}"/>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <br/>
+                                                    <div class=" slds-text-heading_small">
+                                                        <div class="slds-grid slds-wrap">
+                                                            <div class="slds-col slds-size_1-of-3">
+                                                                <!-- button class="slds-button slds-button_brand" disabled="true" style="width:70%"><b>Gender :</b></button -->
+                                                                <div style="font-size: 15px; text-align: right; padding-right: 30px; padding-top:5px;">
+                                                                    <span>
+                                                                        Gender    : 
+                                                                    </span>
+                                                                 </div>
+                                                            </div>
+                                                            
+                                                            <div class="slds-col slds-size_2-of-3" style="background-color:#c5cdf1; border-radius:5px">
+                                                                <lightning:select name="select" value="{!v.LeadDetails.Gender__c}" disabled="{!v.isdisabledLead}">
+                                                                    <aura:iteration items="{!v.gender}" var="color">
+                                                                        <option text="{!color}"></option>
+                                                                    </aura:iteration>
+                                                                </lightning:select>
+                                                            </div>
+                                                            
+                                                        </div>
+                                                    </div>
+                                                    <br/>
+                                                    <div class=" slds-text-heading_small">
+                                                        <div class="slds-grid slds-wrap">
+                                                            <div class="slds-col slds-size_1-of-3">
+                                                                <!-- button class="slds-button slds-button_brand" disabled="true" style="width:70%"><b>Date Of Birth :</b></button -->
+                                                                <div style="font-size: 15px; text-align: right; padding-right: 30px; padding-top:5px;">
+                                                                    <span>
+                                                                        Date Of Birth    : 
+                                                                    </span>
+                                                                 </div>
+                                                            </div>
+                                                            <div class="slds-col slds-size_2-of-3" style="background-color:#c5cdf1; border-radius:5px">
+                                                                <lightning:input name="input2" type="date" value="{!v.LeadDetails.Date_of_Birth__c}" disabled="{!v.isdisabledLead}"/>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <br/>
+                                                    <div class=" slds-text-heading_small">
+                                                        <div class="slds-grid slds-wrap">
+                                                            <div class="slds-col slds-size_1-of-3">
+                                                                <!-- button class="slds-button slds-button_brand" disabled="true" style="width:70%"><b>Wedding Anniversary :</b></button -->
+                                                                <div style="font-size: 15px; text-align: right; padding-right: 30px; padding-top:5px;">
+                                                                    <span>
+                                                                        Wedding Anniversary    : 
+                                                                    </span>
+                                                                 </div>
+                                                            </div>
+                                                            <div class="slds-col slds-size_2-of-3" style="background-color:#c5cdf1; border-radius:5px">
+                                                                <lightning:input name="input2" type="date" value="{!v.LeadDetails.Wedding_Anniversary_Date__c}" disabled="{!v.isdisabledLead}"/>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <br/>
+                                                    <div class=" slds-text-heading_small">
+                                                        <div class="slds-grid slds-wrap">
+                                                            <div class="slds-col slds-size_1-of-3">
+                                                                <!-- button class="slds-button slds-button_brand" disabled="true" style="width:70%"><b>State :</b></button -->
+                                                                <div style="font-size: 15px; text-align: right; padding-right: 30px; padding-top:5px;">
+                                                                    <span>
+                                                                        State    : 
+                                                                    </span>
+                                                                 </div>
+                                                            </div>
+                                                            <div class="slds-col slds-size_2-of-3" style="background-color:#c5cdf1; border-radius:5px">
+                                                                <lightning:input name="input2" value="{!v.LeadDetails.State}" disabled="{!v.isdisabledLead}"/>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <br/>
+                                                    <div class=" slds-text-heading_small">
+                                                        <div class="slds-grid slds-wrap">
+                                                            <div class="slds-col slds-size_1-of-3">
+                                                                <!-- button class="slds-button slds-button_brand" disabled="true" style="width:70%"><b>Street :</b></button -->
+                                                                <div style="font-size: 15px; text-align: right; padding-right: 30px; padding-top:5px;">
+                                                                    <span>
+                                                                        Street    : 
+                                                                    </span>
+                                                                 </div>
+                                                            </div>
+                                                            <div class="slds-col slds-size_2-of-3" style="background-color:#c5cdf1; border-radius:5px">
+                                                                <lightning:input name="input2" value="{!v.LeadDetails.Street}" disabled="{!v.isdisabledLead}"/>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <br/>
+                                                    <div class=" slds-text-heading_small">
+                                                        <div class="slds-grid slds-wrap">
+                                                            <div class="slds-col slds-size_1-of-3">
+                                                                <!-- button class="slds-button slds-button_brand" disabled="true" style="width:70%"><b>Pin Code :</b></button -->
+                                                                <div style="font-size: 15px; text-align: right; padding-right: 30px; padding-top:5px;">
+                                                                    <span>
+                                                                        Pin Code    : 
+                                                                    </span>
+                                                                 </div>
+                                                            </div>
+                                                            <div class="slds-col slds-size_2-of-3" style="background-color:#c5cdf1; border-radius:5px">
+                                                                <lightning:input name="input2" value="{!v.LeadDetails.PostalCode}" disabled="{!v.isdisabledLead}"/>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <br/>
+                                                    
+                                                    <aura:if isTrue="{!v.showLeadSaveButtons}">
+                                                        <div class="slds-grid slds-wrap slds-align_absolute-center" style="margin-right:25%">
+                                                            <button class="slds-button slds-button_brand" onclick="{!c.saveLeadDetails}" ><b>SAVE</b></button>
+                                                            <button class="slds-button slds-button_brand" onclick="{!c.cancelLeadDetails}"><b>CANCEL</b></button>
+                                                        </div>
+                                                    </aura:if>
+                                                </aura:if>
+                                            </div>
+                                        </div>
+                                    </span>
+                                </div>
+
+                            </lightning:layoutItem>
+                            <lightning:layoutItem size="5" padding="around-small">
+                                <div class=" slds-p-around_medium" style="background-color:#ffffff; box-shadow: 5px 5px 15px 15px rgb(230, 228, 228); border-radius:5px;">
+                                    <span>
+                                        <!--lightning:card variant="base" footer="" title="" -->
+                                            <ul class="slds-timeline" style="margin-left:2%">
+                                                <div style="background-color: #ECF0F1;padding:2%;margin-bottom:2%;">
+                                                    <b>Next Best Action</b>
+                                                </div>
+                                                <aura:iteration items="{!v.taskList}" var="task">
+                                                    <aura:if isTrue="{!task.Subject != Null}">
+                                                        <c:NextActionComponent activity="{!task}" lstActivity="{!v.task}" aura:id='cComp' />
+                                                    </aura:if>
+                                                </aura:iteration>
+                                            </ul>
+                                        <!-- /lightning:card --> 
+                                    </span>
+                                </div>
+
+                            </lightning:layoutItem>
+
+                        </lightning:layout>
+                        
+                        
+                        
+                        
+                    <!-- /div -->
+                </lightning:card>
+                
+                <lightning:card>
+                    <div class="slds-card__header slds-grid">
+                        <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                            <div class="slds-media__figure">
+                                <span class="slds-icon_container slds-icon-standard-account" title="account">
+                                    <aura:if isTrue="{!v.ShowAccountHiglightpanel}">
+                                        <lightning:icon iconName="standard:account" alternativeText="Event" title="Event" />
+                                        <span class="slds-assistive-text ">account</span>
+                                    </aura:if>
+                                    <aura:if isTrue="{!v.ShowALeadHiglightpanel}">
+                                        <lightning:icon iconName="standard:lead" alternativeText="Event" title="Event" />
+                                        <span class="slds-assistive-text">Lead</span>\
+                                    </aura:if>
+                                    
+                                </span>
+                            </div>
+                            <div class="slds-media__body">
+                                <h2 class="slds-card__header-title">
+                                    <a href="javascript:void(0);" class="slds-card__header-link slds-truncate" title="Accounts">
+                                        <span>
+                                            <b>
+                                                AGENT FEEDBACK
+                                            </b>
+                                        </span>
+                                    </a>
+                                </h2>
+                            </div>
+                        </header>
+                    </div>
+                    
+                    <div class="slds-grid slds-wrap slds-m-around_medium " style="background-color:#ffffff; border-radius:5px; box-shadow: 5px 5px 15px 15px rgb(230, 228, 228);">
+                        <div class="slds-col slds-size_6-of-12 slds-p-around_large" >
+                            <span>
+                                <div class=" slds-text-heading_small">
+                                    <div class="slds-grid slds-wrap">
+                                        <div class="slds-col slds-size_1-of-3">
+                                            <br/>
+                                            <!--button class="slds-button slds-button_brand" disabled="true" style="width:70%">
+                                                <b>CALL BACK LATER</b>
+                                            </button -->
+                                            <div style="font-size: 15px; text-align: right; padding-right: 30px; padding-top:5px;">
+                                                <span>
+                                                    CALL BACK LATER    : 
+                                                </span>
+                                             </div>
+                                        </div>
+                                        <div class="slds-col slds-size_2-of-3">
+                                            <lightning:input value="{!v.Followupdate}" disabled="{!v.isdisabledFeedback}" type="datetime" name="input1"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br/>
+                                <div class="slds-grid slds-wrap">
+                                    <div class="slds-col slds-size_1-of-3">
+                                        <!-- button class="slds-button slds-button_brand" disabled="true" style="width:70%">
+                                            <b>PRODUCT INTERESTED</b>
+                                        </button -->
+                                        <div style="font-size: 15px; text-align: right; padding-right: 30px; padding-top:5px;">
+                                            <span>
+                                                PRODUCT INTERESTED   : 
+                                            </span>
+                                         </div>
+                                    </div>
+                                    <div class="slds-col slds-size_2-of-3">
+                                        <lightning:input name="input8" value="{! v.InterestedProduct }" disabled="{!v.isdisabledFeedback}"  placeholder="type your Product name here..." />
+                                    </div>
+                                </div>
+                                <br/>
+                                <div class=" slds-text-heading_small">
+                                    <div class="slds-grid slds-wrap">
+                                        <div class="slds-col slds-size_1-of-3">
+                                            <!-- button class="slds-button slds-button_brand" disabled="true" style="width:70%"><b>FEEDBACK</b></button -->
+                                            <div style="font-size: 15px; text-align: right; padding-right: 30px; padding-top:5px;">
+                                                <span>
+                                                    FEEDBACK   : 
+                                                </span>
+                                             </div>
+                                        </div>
+                                        <div class="slds-col slds-size_2-of-3" >
+                                            <span>
+                                                <lightning:textarea name="input2" disabled="{!v.isdisabledFeedback}" placeholder="type your Feedback here..." value="{!v.Feedback}"/>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </span>
+                        </div>
+                    </div>
+                    <div class="slds-align_absolute-center">
+                        <aura:if isTrue="{!v.showSubmitButton}">
+                            <lightning:button variant="brand" label="Submit FeedBack" disabled="{!v.disablesubmitFeedbackbutton}"  title="Brand action" onclick="{! c.SubmitFeedback }" />
+                            <!--aura:if isTrue="{!v.showCancelFeedbackButton}" -->
+                                <lightning:button variant="brand" label="Cancel"  title="Brand action" onclick="{! c.CancelSubmitFeedback }" />
+                            <!-- /aura:if -->
+                            
+                        </aura:if>
+                        <aura:if isTrue="{!v.showEditButton}">
+                            <lightning:button variant="brand" label="Edit FeedBack" title="Brand action" onclick="{! c.EditFeedback }" />
+                        </aura:if>
+                        
+                    </div>
+                </lightning:card>
+                
+                <!-- lightning:card>
+
+                <article class="slds-card ">
+                    <div class="slds-card__header slds-grid">
+                        <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                            <div class="slds-media__figure">
+                              <span class="slds-icon_container slds-icon-standard-account" title="account">
+                                <aura:if isTrue="{!v.ShowAccountHiglightpanel}">
+                                    <lightning:icon iconName="standard:account" alternativeText="Event" title="Event" />
+                                    <span class="slds-assistive-text ">account</span>
+                                </aura:if>
+                                <aura:if isTrue="{!v.ShowALeadHiglightpanel}">
+                                    <lightning:icon iconName="standard:lead" alternativeText="Event" title="Event" />
+                                    <span class="slds-assistive-text">Lead</span>\
+                                </aura:if>
+                                
+                              </span>
+                            </div>
+                            <div class="slds-media__body">
+                              <h2 class="slds-card__header-title">
+                                <a href="javascript:void(0);" class="slds-card__header-link slds-truncate" title="Accounts">
+                                  <span>Happy call feedback</span>
+                                </a>
+                              </h2>
+                            </div>
+                          </header>
+                    </div>
+                </article>
+
+                <div class="slds-grid slds-wrap slds-m-around_xx-large " style="background-color:#ffffff; border-radius:5px; box-shadow: 5px 5px 15px 15px rgb(230, 228, 228);">
+                    <div class="slds-col slds-size_6-of-12 slds-p-around_large" >
+                        <span>
+                            <div class=" slds-text-heading_small">
+                                <div class="slds-grid slds-wrap">
+                                    <div class="slds-col slds-size_1-of-2">
+                                        <span class="slds-text-heading_small slds-text-title_bold">Select Happy Call Options : </span>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2" style="background-color:#c5cdf1; border-radius:5px">
+                                        <span>
+                                            <lightning:formattedText value="{!v.LeadDetails.Website}" title="Company" class="slds-text-heading_small slds-p-around_medium"/ >
+                                            <lightning:inputRichText value="{!v.Feedback}" placeholder="Type something interesting" class="slds-text-heading_small slds-p-around_medium"/>
+                                            <lightning:input name="input8" value="{! v.Feedback }" placeholder="type your Feedback here..." class="slds-text-heading_small slds-p-around_medium"/>
+                                            <ui:inputTextArea aura:id="comments"  value="{!v.Feedback}" placeholder="type your Feedback here..." rows="5"/>
+                                            <lightning:select name="Happy Call" aura:id="option" value="{!v.happycallSelectedvalues}" onchange="{!c.EnableInterestedProduct}" >
+                                                <option value="">None-</option>
+                                                <aura:iteration items="{!v.HpyClOptions}" var="item">
+                                                    <option text="{!item.value}" value="{!item.key}" selected="{!item.selected}"/>
+                                                </aura:iteration>
+                                            </lightning:select>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <br/>
+
+                            <div class=" slds-text-heading_small">
+                                <div class="slds-grid slds-wrap">
+                                    <div class="slds-col slds-size_1-of-2">
+                                        <span class="slds-text-heading_small slds-text-title_bold">Interested Product In :</span>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2" style="background-color:#c5cdf1; border-radius:5px">
+                                        <span>
+                                            <lightning:formattedText value="{!v.LeadDetails.Website}" title="Company" class="slds-text-heading_small slds-p-around_medium"/ >
+                                            <lightning:inputRichText value="{!v.Feedback}" placeholder="Type something interesting" class="slds-text-heading_small slds-p-around_medium"/>
+                                            <lightning:input name="input8" value="{! v.Feedback }" placeholder="type your Feedback here..." class="slds-text-heading_small slds-p-around_medium"/>
+                                            <ui:inputTextArea aura:id="comments"  value="{!v.Feedback}" placeholder="type your Feedback here..." rows="5"/>
+                                            <lightning:select name="Happy Call" aura:id="option" value="{!v.InterestedProdSelectedvalues}" disabled="{!v.enableIntestedProduct}" >
+                                                <option value="">None</option>
+                                                <aura:iteration items="{!v.InterestedProductOptions}" var="item">
+                                                    <option text="{!item.value}" value="{!item.key}" selected="{!item.selected}"/>
+                                                </aura:iteration>
+                                            </lightning:select>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <br/>
+                            
+
+                        </span>
+
+                    </div>
+                    <div class="slds-col slds-size_6-of-12 slds-p-around_large">
+                        <lightning:dualListbox name="multipleOptions" 
+                           label= "Select Feedback for Happy Call" 
+                           sourceLabel="Available" 
+                           selectedLabel="Selected" 
+                           options="{!v.HappycallFeedOptions}" 
+                           value="{!v.happycallFeedSelectedvalues}"/>
+                    
+                    </div>
+
+                </div>
+                <div class="slds-align_absolute-center" style="height:5rem">
+                    <lightning:button variant="brand" label="Submit Happy Call Feedback" title="Brand action" onclick="{! c.SubmitHappyCallFeedback }"/>
+                </div>
+            </lightning:card -->
+                
+            </div>
+            
+            
+            <div class="slds-m-around_x-small " style="border: 5px solid #162088;">
+                <aura:if isTrue="{!v.ShowAccountHiglightpanel}">
+                    <lightning:tabset variant="scoped">
+                        <lightning:tab onactive="{! c.handlePastOrder }" label="Past Orders">
+                            
+                            <!-- #################################################### Show Past orders ############################################ -->
+                            
+                            <aura:if isTrue="{!v.ShowPastOrder}">
+                                
+                                <lightning:card title="Orders" iconName="standard:orders">
+                                    <table class="slds-table slds-table_cell-buffer slds-table_bordered" style="  table-layout: fixed;">
+                                        <thead>
+                                            <tr class="slds-line-height_reset">
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate" title="S.No">S.No</div>
+                                                </th>
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate" title="Name">Order No</div>
+                                                </th>
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate slds-cell-wrap" title="Name">Type</div>
+                                                </th>
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate slds-cell-wrap" title="Name">Purchase Date</div>
+                                                </th>
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate slds-cell-wrap" title="Field Name">Franchisee</div>
+                                                </th>
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate slds-cell-wrap" title="Field Type">Happy call Status</div>
+                                                </th>
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate slds-cell-wrap" title="Field Type">Happy call Remarks</div>
+                                                </th>
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate slds-cell-wrap" title="Field Type">EMI Amount</div>
+                                                </th>
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate slds-cell-wrap" title="Field Type">EMI Date</div>
+                                                </th>
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate slds-cell-wrap" title="Matching Type">Interested Product
+                                                    </div>
+                                                </th>
+                                                <th class="" scope="col" >
+                                                    <div class="slds-truncate slds-cell-wrap" title="Matching Type"> Give Happy Call Feedback
+                                                    </div>
+                                                </th>
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate slds-cell-wrap" title="Matching Type"> Show Order Products
+                                                    </div>
+                                                </th>
+                                                
+                                            </tr>
+                                        </thead>
+                                        <aura:iteration items="{!v.Accountorders}" var="accord" indexVar="index">
+                                            <tbody>
+                                                <tr class="slds-hint-parent" id="{!index}">
+                                                    
+                                                    <td>
+                                                        {!index + 1}
+                                                    </td>
+                                                    <td class="slds-truncate" style="word-wrap: break-word;">
+                                                        <ui:outputText value="{!accord.OrderNumber}" />
+                                                    </td>
+                                                    <td class="slds-truncate" style="word-wrap: break-word;">
+                                                        <ui:outputText value="{!accord.Type}" />
+                                                    </td>
+                                                    <td>
+                                                        <ui:outputText value="{!accord.EffectiveDate}" />
+                                                    </td>
+                                                    
+                                                    <td class="slds-truncate slds-cell-wrap">
+                                                        <ui:outputText value="{!accord.Franchisee_Name__c}" />
+                                                    </td>
+                                                    <td>
+                                                        <ui:outputText value="{!accord.Happy_Call__c}" />
+                                                    </td>
+                                                    <td class="slds-truncate slds-cell-wrap">
+                                                        <ui:outputText value="{!accord.Happy_Call_Remark__c}" />
+                                                    </td>
+                                                    <td class="slds-truncate slds-cell-wrap">
+                                                        <ui:outputText value="{!accord.EMI_Amount__c}" />
+                                                    </td>
+                                                    <td class="slds-truncate slds-cell-wrap">
+                                                        <ui:outputText value="{!accord.EMI_Date__c}" />
+                                                    </td>
+                                                    <td>
+                                                        <ui:outputText value="{!accord.Interested_New_product__c}" />
+                                                    </td>
+                                                    <td class="slds-text-align_center ">
+                                                        <div data-id="{!accord.Id}" class="" onclick="{!c.handleEdit}" style="margin-right: 54%;">
+                                                            <lightning:icon size="medium" iconName="standard:feedback" class="slds-text-link_reset"/>  
+                                                        </div>
+                                                    </td>
+                                                    <td class="slds-text-align_center ">
+                                                        <div data-id="{!accord.Id}" class="" onclick="{!c.showOrderLineItem}" style="margin-right: 54%;">
+                                                            <lightning:button variant="brand" label="Show" title="Brand action" /> 
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                            
+                                        </aura:iteration>
+                                        
+                                    </table>
+                                </lightning:card>
+                                
+                            </aura:if>
+                        </lightning:tab>
+                        
+                        <lightning:tab onactive="{! c.HandleNextBestAction }" label="Past Opportunities">
+                            
+                            <!-- #################################################### Show Past Enquirty ############################################ -->
+                            
+                            <aura:if isTrue="{!v.ShowNextBestAction}">
+                                
+                                <lightning:card title="Opportunities" iconName="standard:action_list_component">
+                                    <table class="slds-table slds-table_cell-buffer slds-table_bordered" style="  table-layout: fixed;">
+                                        <thead>
+                                            <tr class="slds-line-height_reset">
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate" title="S.No">S.No</div>
+                                                </th>
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate" title="Matching Type">Name</div>
+                                                </th>
+                                                
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate" title="Related Object">Account Phone</div>
+                                                </th>
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate slds-cell-wrap" title="Related Object">Budget Amount</div>
+                                                </th>
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate" title="Field Name">Enquiry Type</div>
+                                                </th>
+                                                
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate" title="Matching Value">Stage</div>
+                                                </th>
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate slds-cell-wrap" title="Matching Value">Created Date</div>
+                                                </th>
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate" title="Matching Value">Actions</div>`
+                                                </th>
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate" title="Matching Value">Edit Opp</div>`
+                                                </th>
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate slds-cell-wrap" title="Matching Value">Show Products</div>`
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <aura:iteration items="{!v.AccountOpportunities}" var="AccOpp" indexVar="index">
+                                            <tbody>
+                                                <tr class="slds-hint-parent" id="{!index}">
+                                                    
+                                                    <td>
+                                                        {!index + 1}
+                                                    </td>
+                                                    <td class="slds-truncate slds-cell-wrap" style="word-wrap: break-word;">
+                                                        <ui:outputText value="{!AccOpp.Name}" /> 
+                                                    </td>
+                                                    <td>
+                                                        <ui:outputText value="{!AccOpp.Account_Phone__c}" />
+                                                    </td>
+                                                    <td>
+                                                        <ui:outputText value="{!AccOpp.Amount}" />
+                                                    </td>
+                                                    <td>
+                                                        <ui:outputText value="{!AccOpp.Enquiry_Type__c}" />
+                                                    </td>
+                                                    <td>
+                                                        <ui:outputText value="{!AccOpp.StageName}" />
+                                                    </td>
+                                                    <td>
+                                                        <lightning:formattedDateTime class="slds-truncate slds-cell-wrap" aura:id="dt"
+                                                                                                 value="{!AccOpp.CreatedDate }"
+                                                                                                month="short"
+                                                                                                day="numeric"
+                                                                                                year="numeric"
+                                                                                                hour="2-digit"
+                                                                                                minute="2-digit"
+                                                                                                second="2-digit"
+                                                                                                hour12="true"
+                                                                                                timeZone="Asia/Kolkata"/>
+                                                        <!-- ui:outputDateTime  value="{!AccOpp.CreatedDate }" / -->
+                                                    </td>
+                                                    <td >
+                                                        <!-- div class="slds-grid slds-wrap" -->
+                                                        <fieldset disabled="{!or(equals(AccOpp.StageName, 'Closed Lost'), equals(AccOpp.StageName,'Closed Won'))}">
+                                                            <div data-id="{!AccOpp.Id}" class="" onclick="{! c.ShowMarkasOppClosedLost }" >
+                                                                <lightning:button variant="brand" label="Close Lost" title="Brand action" />
+                                                            </div>
+                                                        </fieldset>
+                                                    </td>
+                                                    <td >
+                                                        <div data-id="{!AccOpp.Id}" class="" onclick="{! c.ShowEditOppRecOLI }" >
+                                                            <lightning:button variant="brand" label="Edit" title="Brand action" />
+                                                        </div>
+                                                        
+                                                    </td>
+                                                    <td >
+                                                        <div data-id="{!AccOpp.Id}" class="" onclick="{! c.ShowOppProducts}" >
+                                                            <lightning:button variant="brand" label="Show" title="Brand action" />
+                                                        </div>
+                                                        
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                            
+                                        </aura:iteration>
+                                        
+                                    </table>
+                                </lightning:card>
+                                
+                            </aura:if>
+                            
+                        </lightning:tab>
+                        <lightning:tab onactive="{! c.handlePastEnquiry }" label="Next Best Actions">
+                            
+                            <!-- #################################################### Show Past Enquiry ############################################ -->
+                            
+                            <aura:if isTrue="{!v.ShowPastEnquiry}">
+                                
+                                <lightning:card title="Enquiry details" iconName="standard:task">
+                                    <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                                        <thead>
+                                            <tr class="slds-line-height_reset">
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate" title="S.No">S.No</div>
+                                                </th>
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate" title="Name">Name</div>
+                                                </th>
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate" title="Related Object">Subject</div>
+                                                </th>
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate" title="Field Name">priority</div>
+                                                </th>
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate" title="Field Type">Type</div>
+                                                </th>
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate" title="Matching Type">Status</div>
+                                                </th>
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate" title="Matching Type">Task Subtype</div>
+                                                </th>
+                                                
+                                            </tr>
+                                        </thead>
+                                        <aura:iteration items="{!v.taskList}" var="tas" indexVar="index">
+                                            <tbody>
+                                                <tr class="slds-hint-parent" id="{!index}">
+                                                    
+                                                    <td>
+                                                        {!index + 1}
+                                                    </td>
+                                                    <td>
+                                                        <ui:outputText value="{!tas.Owner.Name}" />
+                                                    </td>
+                                                    <td>
+                                                        <ui:outputText value="{!tas.Subject}" />
+                                                    </td>
+                                                    <td>
+                                                        <ui:outputText value="{!tas.Priority}" />
+                                                    </td>
+                                                    <td>
+                                                        <ui:outputText value="{!tas.Type}" />
+                                                    </td>
+                                                    <td>
+                                                        <ui:outputText value="{!tas.Status}" /> 
+                                                    </td>
+                                                    <td>
+                                                        <ui:outputText value="{!tas.TaskSubtype}" /> 
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                            
+                                        </aura:iteration>
+                                        
+                                    </table>
+                                </lightning:card>
+                                
+                            </aura:if>
+                            
+                        </lightning:tab>
+                        
+                        <lightning:tab onactive="{! c.HandleCallLogs }" label="Call Logs">
+                            
+                            <!-- #################################################### Show Past Enquirty ############################################ -->
+                            
+                            <aura:if isTrue="{!v.ShowCallLogs}">
+                                
+                                <lightning:card title="Call History" iconName="standard:call">
+                                    <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                                        <thead>
+                                            <tr class="slds-line-height_reset">
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate" title="S.No">S.No</div>
+                                                </th>
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate" title="Name">Name</div>
+                                                </th>
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate" title="Field Name">Call Start Time</div>
+                                                </th>
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate" title="Field Type">Call EndTime</div>
+                                                </th>
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate" title="Matching Type">Call Duration</div>
+                                                </th>
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate" title="Matching Value">Call Status</div>
+                                                </th>
+                                                <!--th class="" scope="col">
+                                                    <div class="slds-truncate" title="Marks Alloted">Sequence</div>
+                                                </th -->
+                                            </tr>
+                                        </thead>
+                                        <aura:iteration items="{!v.CallLogList}" var="calllog" indexVar="index">
+                                            <tbody>
+                                                <tr class="slds-hint-parent" id="{!index}">
+                                                    
+                                                    <td>
+                                                        {!index + 1}
+                                                    </td>
+                                                    <td>
+                                                            <ui:outputText value="{!calllog.Subject__c}" />
+                                                    </td>
+                                                    <td>
+                                                            <!-- ui:outputDateTime value="{!calllog.Call_StartedOn__c}" / -->
+                                                            <lightning:formattedDateTime aura:id="dt"
+                                                                                                value="{!calllog.Call_StartedOn__c}"
+                                                                                                month="short"
+                                                                                                day="numeric"
+                                                                                                year="numeric"
+                                                                                                hour="2-digit"
+                                                                                                minute="2-digit"
+                                                                                                second="2-digit"
+                                                                                                hour12="true"
+                                                                                                timeZone="Asia/Kolkata"/> <!-- timeZone="{!$Locale.timezone}" -->
+                                                    </td>
+                                                    <td>
+                                                            <!-- ui:outputDateTime value="{!calllog.Call_End_Time__c}" / -->
+
+                                                            <lightning:formattedDateTime aura:id="dt"
+                                                                                                value="{!calllog.Call_End_Time__c}"
+                                                                                                month="short"
+                                                                                                day="numeric"
+                                                                                                year="numeric"
+                                                                                                hour="2-digit"
+                                                                                                minute="2-digit"
+                                                                                                second="2-digit"
+                                                                                                hour12="true"
+                                                                                                timeZone="Asia/Kolkata"/>
+                                                    </td>
+                                                    <td>
+                                                            <ui:outputText value="{!calllog.Call_Duration_In_Seconds__c}" />
+                                                    </td>
+                                                    <td>
+                                                            <ui:outputText value="{!calllog.Call_Status__c}" />
+                                                    </td>
+                                                    <!-- td>
+                                                        <b>
+                                                            <ui:outputText value="" />
+                                                        </b>
+                                                    </td -->
+                                                </tr>
+                                            </tbody>
+                                            
+                                        </aura:iteration>
+                                        
+                                    </table>
+                                </lightning:card>
+                                
+                            </aura:if>
+                        </lightning:tab>
+                        
+                        <lightning:tab onactive="{! c.HandleRecordHistory }" label="Record History">
+                            
+                            <!-- #################################################### Show Past Enquirty ############################################ -->
+                            
+                            <aura:if isTrue="{!v.ShowRecordHistory}">
+                                
+                                <lightning:card title="Record History" iconName="standard:account">
+                                    <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                                        <thead>
+                                            <tr class="slds-line-height_reset">
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate" title="S.No">S.No</div>
+                                                </th>
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate" title="Name">Field Name</div>
+                                                </th>
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate" title="Related Object">Old Value</div>
+                                                </th>
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate" title="Field Name">New Value</div>
+                                                </th>
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate" title="Field Type">Field Type</div>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <aura:iteration items="{!v.AccountHistory}" var="acchis" indexVar="index">
+                                            <tbody>
+                                                <tr class="slds-hint-parent" id="{!index}">
+                                                    
+                                                    <td>
+                                                        {!index + 1}
+                                                    </td>
+                                                    <td>
+                                                        <ui:outputText value="{!acchis.Field}" />
+                                                    </td>
+                                                    <td>
+                                                        <ui:outputText value="{!acchis.OldValue}" />
+                                                    </td>
+                                                    <td>
+                                                        <ui:outputText value="{!acchis.NewValue}" />
+                                                    </td>
+                                                    <td>
+                                                        <ui:outputText value="{!acchis.DataType}" />
+                                                    </td>
+                                                    
+                                                </tr>
+                                            </tbody>
+                                            
+                                        </aura:iteration>
+                                        
+                                    </table>
+                                </lightning:card>
+                                
+                            </aura:if>
+                            
+                            
+                        </lightning:tab>
+                    </lightning:tabset>
+                    
+                </aura:if>
+                <aura:if isTrue="{!v.ShowALeadHiglightpanel}">
+                    <lightning:tabset variant="scoped">
+                        <lightning:tab onactive="{! c.HandleLeadHistory }" label="Lead History">
+                            
+                            <!-- #################################################### Show Past orders ############################################ -->
+                            
+                            <aura:if isTrue="{!v.ShowLeadHistory}">
+                                
+                                <lightning:card title="Orders" iconName="standard:orders">
+                                    <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                                        <thead>
+                                            <tr class="slds-line-height_reset">
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate" title="S.No">S.No</div>
+                                                </th>
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate" title="Name">Field Name</div>
+                                                </th>
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate" title="Related Object">Old Value</div>
+                                                </th>
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate" title="Field Name">New Value</div>
+                                                </th>
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate" title="Field Type">Field Type</div>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <aura:iteration items="{!v.LeadHistory}" var="Leadhis" indexVar="index">
+                                            <tbody>
+                                                <tr class="slds-hint-parent" id="{!index}">
+                                                    
+                                                    <td>
+                                                        {!index + 1}
+                                                    </td>
+                                                    <td>
+                                                        <ui:outputText value="{!Leadhis.Field}" />
+                                                    </td>
+                                                    <td>
+                                                        <ui:outputText value="{!Leadhis.OldValue}" />
+                                                    </td>
+                                                    <td>
+                                                        <ui:outputText value="{!Leadhis.NewValue}" />
+                                                    </td>
+                                                    <td>
+                                                        <ui:outputText value="{!Leadhis.DataType}" />
+                                                    </td>
+                                                    
+                                                </tr>
+                                            </tbody>
+                                            
+                                        </aura:iteration>
+                                        
+                                    </table>
+                                </lightning:card>
+                                
+                            </aura:if>
+                        </lightning:tab>
+                        <lightning:tab onactive="{! c.handleLeadTaskHistory }" label="Next Best Action">
+                            
+                            <!-- #################################################### Show Past Enquiry ############################################ -->
+                            
+                            <aura:if isTrue="{!v.showLeadtaskList}">
+                                
+                                <lightning:card title="Enquiry details" iconName="standard:account">
+                                    <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                                        <thead>
+                                            <tr class="slds-line-height_reset">
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate" title="S.No">S.No</div>
+                                                </th>
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate" title="Name">Subject</div>
+                                                </th>
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate" title="Related Object">Priority</div>
+                                                </th>
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate" title="Field Name">Status</div>
+                                                </th>
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate" title="Field Type">Name</div>
+                                                </th>
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate" title="Matching Type">IsPersonAccount</div>
+                                                </th>
+                                                
+                                            </tr>
+                                        </thead>
+                                        <aura:iteration items="{!v.taskList}" var="taskRec" indexVar="index">
+                                            <tbody>
+                                                <tr class="slds-hint-parent" id="{!index}">
+                                                    
+                                                    <td>
+                                                        {!index + 1}
+                                                    </td>
+                                                    <td>
+                                                        <ui:outputText value="{!taskRec.Subject}" />
+                                                    </td>
+                                                    <td>
+                                                        <ui:outputText value="{!taskRec.Priority}" />
+                                                    </td>
+                                                    <td>
+                                                        <ui:outputText value="{!taskRec.Status}" />
+                                                    </td>
+                                                    <td>
+                                                        <ui:outputText value="{!taskRec.Who.Name}" />
+                                                    </td>
+                                                    <td>
+                                                        <ui:outputText value="{!taskRec.IsPersonAccount}" />
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                            
+                                        </aura:iteration>
+                                        
+                                    </table>
+                                </lightning:card>
+                                
+                            </aura:if>
+                            
+                        </lightning:tab>
+
+                        <lightning:tab onactive="{! c.handleLeadCallLogs }" label="Call Logs">
+                            
+                            <!-- #################################################### Show Past Enquirty ############################################ -->
+                            
+                            <aura:if isTrue="{!v.ShowLeadCallLogs}">
+                                
+                                <lightning:card title="Call History" iconName="standard:call">
+                                    <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                                        <thead>
+                                            <tr class="slds-line-height_reset">
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate" title="S.No">S.No</div>
+                                                </th>
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate" title="Name">Name</div>
+                                                </th>
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate" title="Field Name">Call Start Time</div>
+                                                </th>
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate" title="Field Type">Call EndTime</div>
+                                                </th>
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate" title="Matching Type">Call Duration</div>
+                                                </th>
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate" title="Matching Value">Call Status</div>
+                                                </th>
+                                                <!--th class="" scope="col">
+                                                    <div class="slds-truncate" title="Marks Alloted">Sequence</div>
+                                                </th -->
+                                            </tr>
+                                        </thead>
+                                        <aura:iteration items="{!v.LeadCallLogList}" var="calllog" indexVar="index">
+                                            <tbody>
+                                                <tr class="slds-hint-parent" id="{!index}">
+                                                    
+                                                    <td>
+                                                        {!index + 1}
+                                                    </td>
+                                                    <td>
+                                                            <ui:outputText value="{!calllog.Subject__c}" />
+                                                    </td>
+                                                    <td>
+                                                            <!-- ui:outputDateTime value="{!calllog.Call_StartedOn__c}" / -->
+                                                            <lightning:formattedDateTime aura:id="dt"
+                                                                                                value="{!calllog.Call_StartedOn__c}"
+                                                                                                month="short"
+                                                                                                day="numeric"
+                                                                                                year="numeric"
+                                                                                                hour="2-digit"
+                                                                                                minute="2-digit"
+                                                                                                second="2-digit"
+                                                                                                hour12="true"
+                                                                                                timeZone="Asia/Kolkata"/> <!-- timeZone="{!$Locale.timezone}" -->
+                                                    </td>
+                                                    <td>
+                                                            <!-- ui:outputDateTime value="{!calllog.Call_End_Time__c}" / -->
+
+                                                            <lightning:formattedDateTime aura:id="dt"
+                                                                                                value="{!calllog.Call_End_Time__c}"
+                                                                                                month="short"
+                                                                                                day="numeric"
+                                                                                                year="numeric"
+                                                                                                hour="2-digit"
+                                                                                                minute="2-digit"
+                                                                                                second="2-digit"
+                                                                                                hour12="true"
+                                                                                                timeZone="Asia/Kolkata"/>
+                                                    </td>
+                                                    <td>
+                                                            <ui:outputText value="{!calllog.Call_Duration_In_Seconds__c}" />
+                                                    </td>
+                                                    <td>
+                                                            <ui:outputText value="{!calllog.Call_Status__c}" />
+                                                    </td>
+                                                    <!-- td>
+                                                        <b>
+                                                            <ui:outputText value="" />
+                                                        </b>
+                                                    </td -->
+                                                </tr>
+                                            </tbody>
+                                            
+                                        </aura:iteration>
+                                        
+                                    </table>
+                                </lightning:card>
+                                
+                            </aura:if>
+                        </lightning:tab>
+
+                        <lightning:tab onactive="{! c.handleProductList }" label="Product List">
+                            
+                            <!-- #################################################### Show Past Enquirty ############################################ -->
+                            
+                            <aura:if isTrue="{!v.ShowProductList}">
+                                
+                                <lightning:card title="Call History" iconName="standard:Product">
+                                    <!-- c:productIntrestComponent leadId ="{!v.LeadRecId}"/ -->
+                                    <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                                        <thead>
+                                            <tr class="slds-line-height_reset">
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate" title="S.No">S.No</div>
+                                                </th>
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate" title="Name">Product Name</div>
+                                                </th>
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate" title="Name">MRP</div>
+                                                </th>
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate" title="Field Name">MOP1</div>
+                                                </th>
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate" title="Field Type">MOP2</div>
+                                                </th>
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate" title="Matching Type">Quantity</div>
+                                                </th>
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate" title="Matching Value">Total</div>
+                                                </th>
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate" title="Matching Value">Proposed Price</div>
+                                                </th>
+                                                <th class="" scope="col">
+                                                    <div class="slds-truncate" title="Matching Value">Proposed Total Price</div>
+                                                </th>
+                                                <!--th class="" scope="col">
+                                                    <div class="slds-truncate" title="Marks Alloted">Sequence</div>
+                                                </th -->
+                                            </tr>
+                                        </thead>
+                                        <aura:iteration items="{!v.productList}" var="product" indexVar="index">
+                                            <tbody>
+                                                <tr class="slds-hint-parent" id="{!index}">
+                                                    
+                                                    <td>
+                                                        {!index + 1}
+                                                    </td>
+                                                    <td>
+                                                            <ui:outputText value="{!product.Product_Name__c}" />
+                                                    </td>
+                                                    <td>
+                                                        <ui:outputText value="{!product.MRP__c}" />
+                                                    </td>
+                                                    <td>
+                                                        <ui:outputText value="{!product.MOP1__c}" />
+                                                    </td>
+                                                    <td>
+                                                            <!-- ui:outputDateTime value="{!calllog.Call_End_Time__c}" / -->
+
+                                                            <ui:outputText value="{!product.MOP2__c}" />
+                                                    </td>
+                                                    <td>
+                                                            <ui:outputText value="{!product.Quantity__c}" />
+                                                    </td>
+                                                    <td>
+                                                            <ui:outputText value="{!product.Total__c}" />
+                                                    </td>
+                                                    <td>
+                                                        <ui:outputText value="{!product.Proposed_MRP__c}" />
+                                                    </td>
+                                                     <td>
+                                                        <ui:outputText value="{!product.Proposed_Total__c}" />
+                                                    </td>
+                                                    <!-- td>
+                                                        <b>
+                                                            <ui:outputText value="" />
+                                                        </b>
+                                                    </td -->
+                                                </tr>
+                                            </tbody>
+                                            
+                                        </aura:iteration>
+                                        
+                                    </table>
+                                </lightning:card>
+                                
+                            </aura:if>
+                        </lightning:tab>
+
+                    </lightning:tabset>
+                    
+                </aura:if>
+            </div>
+            
+        </aura:if>
+        <div style="margin: 15px;">
+            
+            
+            <aura:if isTrue="{!v.ShowProductdetails}">
+                <div class="slds-grid slds-wrap ">
+                    <div class="slds-col slds-size_12-of-12 slds-p-around_medium">
+                        <c:ShowProductForm></c:ShowProductForm>
+                    </div>
+                </div>
+            </aura:if>
+            
+            <aura:if isTrue="{!v.ShowCallScriptdetails}">
+                <lightning:card>
+                    <article class="slds-card ">
+                        <div class="slds-card__header slds-grid">
+                            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                                <div class="slds-media__figure">
+                                    <span class="slds-icon_container slds-icon-standard-account" title="account">
+                                        <lightning:icon iconName="standard:product" alternativeText="Event" title="Event" />
+                                        <span class="slds-assistive-text">Call</span>
+                                    </span>
+                                </div>
+                                <div class="slds-media__body">
+                                    <h2 class="slds-card__header-title">
+                                        <a href="javascript:void(0);" class="slds-card__header-link slds-truncate" title="Accounts">
+                                            <span>Call Scripts</span>
+                                        </a>
+                                    </h2>
+                                </div>
+                                
+                            </header>
+                            
+                        </div>
+                    </article>
+                    <div class="slds-grid slds-wrap ">
+                        <div class="slds-col slds-size_2-of-12 slds-p-around_medium"></div>
+                        <div class="slds-col slds-size_8-of-12 slds-p-around_medium">
+                            <iframe src="{!'https://whitemart--partial.sandbox.my.salesforce-sites.com/CallScript'}"
+                                    width="750px" height="750px;" frameBorder="0" />
+                        </div>
+                        <div class="slds-col slds-size_2-of-12 slds-p-around_medium"></div>
+                    </div>
+                </lightning:card>
+            </aura:if>
+            
+            <aura:if isTrue="{!v.ShowInventorydetails}">
+                <div class="slds-m-around_x-small">
+                    <c:InventorySearchForAabaSoftAgent></c:InventorySearchForAabaSoftAgent>
+                </div>
+                
+            </aura:if>
+            
+            <aura:if isTrue="{!v.ShowEditOrderForHappyCallFeedback}">
+                <c:HappycallFeedbackForm OrderId="{!v.SelectedOrderRecId}" Childresult="{!v.Childresponse}"></c:HappycallFeedbackForm>
+            </aura:if>
+            
+            <aura:if isTrue="{!v.ShowMarkasOppClosedLostModal}">
+                <c:MarkOppClosedLost OpportunityrecordId="{!v.SelectedoppRecId}"  lossreasonoptionsForChild="{!v.lossReasonOptions}"></c:MarkOppClosedLost>
+            </aura:if>
+            <aura:if isTrue="{!v.ShowEditOppWithOLIModal}">
+                <c:editCustomOpportunityUsingApex  onCloseEditOppModal="{!c.handleCloseEditOppModal}" OppId="{!v.SelectedoppRecId}"></c:editCustomOpportunityUsingApex>
+            </aura:if>
+            
+            <aura:if isTrue="{!v.ShowOppProductsModal}">
+                <c:ShowOpportunityProducts OpportunityrecordId="{!v.SelectedoppRecId}"></c:ShowOpportunityProducts>
+            </aura:if>
+            
+            <aura:if isTrue="{!v.ShowOrderProductsModal}">
+                <c:ShowOrderProducts orderrecordId="{!v.SelectedOrderRecId}"></c:ShowOrderProducts>
+            </aura:if>
+        </div>
+    </aura:if>
+</aura:component>

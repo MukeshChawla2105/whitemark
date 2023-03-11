@@ -1,0 +1,24 @@
+<apex:page action="{!checkExistingHashKeyMatching}" controller="CustomerDetailVfPageController" showHeader="false" sidebar="false">
+
+    <apex:includeLightning />
+    <apex:includeScript value="/lightning/lightning.out.js" />
+    <div id="lightningapp" />
+    <script>
+        debugger;
+    var PhoneNumb = "{!$CurrentPage.parameters.Phone}";
+    var agentuniqueID = "{!$CurrentPage.parameters.AgentId}";
+    //var Hashcode = "{!$CurrentPage.parameters.id}";
+
+            $Lightning.use("c:CustomerDetailPageForVFpageApp", function () {
+                $Lightning.createComponent("c:CustomerDetailComponent",
+                    { "CustomerPhoneNumber": PhoneNumb,
+                        "AgentuniqueID" :  agentuniqueID},
+                    "lightningapp",
+                    function (cmp) {
+                        console.log("Customer Detail is loaded in Vf page");
+                        // do some stuff
+                    }
+                );
+            });
+    </script>
+</apex:page>

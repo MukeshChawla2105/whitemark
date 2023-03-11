@@ -1,0 +1,172 @@
+<template>
+    
+        <lightning-button type="Sumbit" label="Create Opportunity" variant="Brand" onclick={HandlePopUp}></lightning-button>
+
+        <template if:true={ModalVisible}>
+            <lightning-card>
+                <section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-heading-01" class="slds-modal slds-fade-in-open slds-modal_medium">
+                <div class="slds-modal__container" >
+                    <div class="stepOne">
+
+                        <div class="slds-modal__header">
+                            <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
+                                <lightning-icon icon-name="utility:close"
+                                    alternative-text="close"
+                                    variant="inverse"
+                                    size="small" ></lightning-icon>
+                                <span class="slds-assistive-text">Close</span>
+                            </button>
+                            <h1 id="modal-heading-01" class="slds-modal__title slds-hyphenate">Opportunity</h1>
+                        </div>
+
+                            <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1" style="height:18rem">
+                                <lightning-input type="Text" placeholder="Name" label="Opportunity Name" value={name} onchange={HandleChangename} required></lightning-input>
+                                <br/>
+                                <template if:true={StagePicklistValues.data}>
+                                    <lightning-combobox name="Stage" label="Stage" value={picklistvalue} placeholder="select"
+                                        options={StagePicklistValues.data.values} onchange={handleChange} required>
+                                    </lightning-combobox>
+                                </template> 
+                                <br/>
+                                <lightning-input type="Date" placeholder="Close Date" label="Close Date" value={Cdate} onchange={HandleChangeDate} required></lightning-input>
+                            </div>
+
+                            <div class="slds-modal__footer">
+                                <lightning-button type="Sumbit" label="Cancel" variant="Destructive" onclick={HandleCancel}></lightning-button>
+                                <lightning-button type="Sumbit" label="Next" variant="Brand" onclick={HandleFirstNext}></lightning-button>
+                            </div>
+                    </div>
+
+                   <div class="stepTwo slds-hide">
+                        <div class="slds-modal__header">
+                            <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
+                                <lightning-icon icon-name="utility:close"
+                                    alternative-text="close"
+                                    variant="inverse"
+                                    size="small" ></lightning-icon>
+                                <span class="slds-assistive-text">Close</span>
+                            </button>
+                            <h1 id="modal-heading-02" class="slds-modal__title slds-hyphenate"> Add Products </h1>
+                        </div>
+                        
+                        <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-2">
+                            <lightning-input type="text" placeholder="Search Product" value={HandleChangeValue} onchange={HandleProductSearch}></lightning-input>
+                            <div class="slds-scrollable_y" style="height:20rem; width: auto;">
+                                <template if:true={showSpinner}>
+                                    <div>
+                                        <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+                                    </div>
+                                </template>
+                                <template if:false={showSpinner}>
+                                    <lightning-datatable key-field="Id"
+                                                            data={data}
+                                                            columns={columns}
+                                                            show-row-number-column="true"
+                                                            onrowselection={getSelectedValue}>
+                                    </lightning-datatable>
+                                </template>
+                           </div>
+                        </div>
+                        <div class="slds-modal__footer">
+                            <lightning-button type="Sumbit" label="Next" variant="Brand" onclick={HandleSecondNext}></lightning-button>
+                            <div class="slds-float_left">
+                                <lightning-button type="Sumbit" label="Previous" variant="Brand" onclick={HandlePrevious}></lightning-button>
+                             </div>
+                        </div>
+                   </div>
+
+                   <div class="stepThree slds-hide">
+                    <div class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
+                            <lightning-icon icon-name="utility:close"
+                                alternative-text="close"
+                                variant="inverse"
+                                size="small" ></lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h1 id="modal-heading-03" class="slds-modal__title slds-hyphenate"> Selected Product List</h1>
+                    </div>
+
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-3">
+                        <template if:true={ShowProductData}>
+                        
+                        <lightning-card>
+                                <div class="slds-scrollable" style="height:20rem; width: auto;">
+                            <table class="slds-table slds-table_bordered slds-table_header-fixed slds-table_resizable-cols slds-table_fixed-layout">
+                                    <thead>
+                                        <th class="slds-is-resizable dv-dynamic-width" scope="col">
+                                          Product Name
+                                        </th>
+                                        <th class="slds-is-resizable dv-dynamic-width" scope="col" >
+                                          Product Code
+                                        </th>
+                                        <th class="slds-is-resizable dv-dynamic-width" scope="col" >
+                                           Product List Price
+                                        </th>
+                                        <th class="slds-is-resizable dv-dynamic-width" scope="col">
+                                           MOP1
+                                        </th>
+                                        <th class="slds-is-resizable dv-dynamic-width" scope="col" >
+                                           MOP2
+                                        </th>
+                                        <th class="slds-is-resizable dv-dynamic-width" scope="col" title="Column 1">
+                                          Quantity
+                                        </th>
+                                        <th class="slds-is-resizable dv-dynamic-width" scope="col" title="Column 1">
+                                          Final Price
+                                        </th>
+                                    </thead>
+                            <tbody>
+                                <template for:each={selectedRows} for:item="prod" for:index="index">
+
+                                    <tr key={prod.Id}>
+                                        <th  scope="col">
+                                            <div  class="slds-truncate slds-cell-wrap" >{prod.Name}</div>
+                                        </th>
+                                        <th  scope="col">
+                                            <div  class="slds-truncate slds-cell-wrap" >{prod.ProductCode}</div>
+                                        </th>
+                                        <th  scope="col">
+                                            <div class="slds-truncate dv-dynamic-width" >{prod.MRP__c}</div>
+                                        </th>
+                                        <th  scope="col">
+                                            <div class="slds-truncate dv-dynamic-width">{prod.MOP1__c}</div>  
+                                        </th>
+                                        <th  scope="col">
+                                            <div class="slds-truncate dv-dynamic-width" >{prod.MOP2__c}</div>
+                                        </th>
+                                        <th  scope="col">
+                                            <div class="slds-truncate dv-dynamic-width" >
+                                                <lightning-input type="Number" placeholder="Quantity"  data-id={prod.Id}  value={prod.ProductQuantity__c} onchange={HandleQuantityValueChange} required></lightning-input>
+                                            </div>
+                                        </th>
+                                        <th  scope="col">
+                                            <div class="slds-truncate dv-dynamic-width" >
+                                                <lightning-input type="Number" placeholder="Final Price" data-id={prod.Id}  value={prod.FinalPrice__c} onchange={HandleFinalValueChange} required></lightning-input>
+                                            </div>
+                                        </th>
+        
+                                    </tr>
+                                </template>
+                            </tbody>
+                           </table>
+                        </div>
+                        
+                        </lightning-card>
+                        </template>
+                    </div>
+                    <div class="slds-modal__footer">
+                        <lightning-button type="Sumbit" label="Cancel" variant="Destructive" onclick={HandleCancelBeforeSave}></lightning-button>
+                        <lightning-button type="Sumbit" label="Save" variant="Brand" onclick={HandleSave}></lightning-button>
+                        
+                        <div class="slds-float_left">
+                            <lightning-button type="Sumbit" label="Previous" variant="Brand" onclick={HandleSecondPrevious}></lightning-button>
+                         </div>
+                    </div>
+               </div>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+        </lightning-card>
+        </template>
+</template>

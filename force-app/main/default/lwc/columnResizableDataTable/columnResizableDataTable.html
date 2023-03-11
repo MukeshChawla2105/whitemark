@@ -1,0 +1,266 @@
+<template>
+
+    <div id="containerDiv" onmousemove={handlemousemove} onmouseup={handlemouseup}
+         ondblclick={handledblclickresizable}
+         class="slds-table_header-fixed_container slds-border_right slds-border_left tableScroll"
+         onscroll={tableOuterDivScrolled}>
+        <div id="tableViewInnerDiv" onscroll={tableScrolled} class="slds-scrollable_y tableViewInnerDiv">
+ 
+            <table
+                   class="slds-table slds-table_bordered slds-table_header-fixed slds-table_resizable-cols slds-table_fixed-layout">
+                <thead>
+                    <tr>
+                        <th class="slds-is-resizable dv-dynamic-width" scope="col" style={fixedWidth} title="Column 1">
+                            <div class="slds-cell-fixed" style={fixedWidth}>
+                                <a class="slds-th__action slds-text-link--reset ">
+                                    <span class="slds-truncate">Product Name</span>
+                                </a>
+                                <div class="slds-resizable">
+                                    <span class="slds-resizable__handle" onmousedown={handlemousedown}>
+                                        <span class="slds-resizable__divider"></span>
+                                    </span>
+                                </div>
+                            </div>
+                        </th>
+                        <th class="slds-is-resizable dv-dynamic-width" scope="col" style={fixedWidth} title="Column 2">
+                            <div class="slds-cell-fixed" style={fixedWidth}>
+                                <a class="slds-th__action slds-text-link--reset ">
+                                    <span class="slds-truncate">Product Code</span>
+                                </a>
+                                <div class="slds-resizable">
+                                    <span class="slds-resizable__handle" onmousedown={handlemousedown}>
+                                        <span class="slds-resizable__divider"></span>
+                                    </span>
+                                </div>
+                            </div>
+                        </th>
+                        <th class="slds-is-resizable dv-dynamic-width" scope="col" style={fixedWidth} title="Column 3">
+                            <div class="slds-cell-fixed" style={fixedWidth}>
+                                <a class="slds-th__action slds-text-link--reset ">
+                                    <span class="slds-truncate">Product List Price</span>
+                                </a>
+                                <div class="slds-resizable">
+                                    <span class="slds-resizable__handle" onmousedown={handlemousedown}>
+                                        <span class="slds-resizable__divider"></span>
+                                    </span>
+                                </div>
+                            </div>
+                        </th>
+                        <th class="slds-is-resizable dv-dynamic-width" scope="col" style={fixedWidth} title="Column 3">
+                            <div class="slds-cell-fixed" style={fixedWidth}>
+                                <a class="slds-th__action slds-text-link--reset ">
+                                    <span class="slds-truncate">MOP1</span>
+                                </a>
+                                <div class="slds-resizable">
+                                    <span class="slds-resizable__handle" onmousedown={handlemousedown}>
+                                        <span class="slds-resizable__divider"></span>
+                                    </span>
+                                </div>
+                            </div>
+                        </th>
+                        <th class="slds-is-resizable dv-dynamic-width" scope="col" style={fixedWidth} title="Column 3">
+                            <div class="slds-cell-fixed" style={fixedWidth}>
+                                <a class="slds-th__action slds-text-link--reset ">
+                                    <span class="slds-truncate">MOP2</span>
+                                </a>
+                                <div class="slds-resizable">
+                                    <span class="slds-resizable__handle" onmousedown={handlemousedown}>
+                                        <span class="slds-resizable__divider"></span>
+                                    </span>
+                                </div>
+                            </div>
+                        </th>
+                        <th class="slds-is-resizable dv-dynamic-width" scope="col" style={fixedWidth} title="Column 3">
+                            <div class="slds-cell-fixed" style={fixedWidth}>
+                                <a class="slds-th__action slds-text-link--reset ">
+                                    <span class="slds-truncate">Quantity</span>
+                                </a>
+                                <div class="slds-resizable">
+                                    <span class="slds-resizable__handle" onmousedown={handlemousedown}>
+                                        <span class="slds-resizable__divider"></span>
+                                    </span>
+                                </div>
+                            </div>
+                        </th>
+                        <th class="slds-is-resizable dv-dynamic-width" scope="col" style={fixedWidth} title="Column 3">
+                            <div class="slds-cell-fixed" style={fixedWidth}>
+                                <a class="slds-th__action slds-text-link--reset ">
+                                    <span class="slds-truncate">Final Price</span>
+                                </a>
+                                <div class="slds-resizable">
+                                    <span class="slds-resizable__handle" onmousedown={handlemousedown}>
+                                        <span class="slds-resizable__divider"></span>
+                                    </span>
+                                </div>
+                            </div>
+                        </th>
+                        <th scope="col">
+                            <div class="slds-cell-fixed">
+                                  
+                            </div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <template for:each={selectedProducts} for:item="prod" for:index="index">
+                        <tr key={prod.Id}>
+                            <th  scope="col" class="slds-truncate dv-dynamic-width" style={fixedWidth}>
+                                <div>{prod.Name}</div>
+                            </th>
+                            <th  scope="col" class="slds-truncate dv-dynamic-width" style={fixedWidth}>
+                                <div>{prod.ProductCode}</div>
+                            </th>
+                            <th  scope="col" class="slds-truncate dv-dynamic-width" style={fixedWidth}>
+                                <div>{prod.MRP__c}</div>
+                            </th>
+                            <th  scope="col" class="slds-truncate dv-dynamic-width" style={fixedWidth}>
+                                <div>{prod.MOP1__c}</div>  
+                            </th>
+                            <th  scope="col" class="slds-truncate dv-dynamic-width" style={fixedWidth}>
+                                <div>{prod.MOP2__c}</div>
+                            </th>
+                            <th  scope="col" class="slds-truncate dv-dynamic-width" style={fixedWidth}>
+                             <div>
+                                <lightning-input type="Number" placeholder="Quantity"  data-id={prod.Id}  value={prod.ProductQuantity__c} onchange={HandleQuantityValueChange} required></lightning-input>
+                              </div>
+                            </th>
+                            <th  scope="col" class="slds-truncate dv-dynamic-width" style={fixedWidth}>
+                                <div>
+                                    <lightning-input type="Number" placeholder="Final Price" data-id={prod.Id}  value={prod.FinalPrice__c} onchange={HandleFinalValueChange} required></lightning-input>
+                                 </div>
+                               </th>
+
+                        </tr>
+                    </template>
+                    <tr>
+                        <td>
+                            <div class="slds-truncate dv-dynamic-width" style={fixedWidth}>Made neat an on be gave show
+                                snug tore neat an on be gave
+                            </div>
+                        </td>
+                        <td>
+                            <div class="slds-truncate dv-dynamic-width" style={fixedWidth}>Piqued favour</div>
+                        </td>
+                        <td>
+                            <div class="slds-truncate dv-dynamic-width" style={fixedWidth}>behaviour</div>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="slds-truncate dv-dynamic-width" style={fixedWidth}>Made neat an on be gave show
+                                snug tore neat an on be gave
+                            </div>
+                        </td>
+                        <td>
+                            <div class="slds-truncate dv-dynamic-width" style={fixedWidth}>Piqued favour</div>
+                        </td>
+                        <td>
+                            <div class="slds-truncate dv-dynamic-width" style={fixedWidth}>behaviour</div>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="slds-truncate dv-dynamic-width" style={fixedWidth}>Made neat an on be gave show
+                                snug tore neat an on be gave
+                            </div>
+                        </td>
+                        <td>
+                            <div class="slds-truncate dv-dynamic-width" style={fixedWidth}>Piqued favour</div>
+                        </td>
+                        <td>
+                            <div class="slds-truncate dv-dynamic-width" style={fixedWidth}>behaviour</div>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="slds-truncate dv-dynamic-width" style={fixedWidth}>Made neat an on be gave show
+                                snug tore neat an on be gave
+                            </div>
+                        </td>
+                        <td>
+                            <div class="slds-truncate dv-dynamic-width" style={fixedWidth}>Piqued favour</div>
+                        </td>
+                        <td>
+                            <div class="slds-truncate dv-dynamic-width" style={fixedWidth}>behaviour</div>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="slds-truncate dv-dynamic-width" style={fixedWidth}>Made neat an on be gave show
+                                snug tore neat an on be gave
+                            </div>
+                        </td>
+                        <td>
+                            <div class="slds-truncate dv-dynamic-width" style={fixedWidth}>Piqued favour</div>
+                        </td>
+                        <td>
+                            <div class="slds-truncate dv-dynamic-width" style={fixedWidth}>behaviour</div>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="slds-truncate dv-dynamic-width" style={fixedWidth}>Made neat an on be gave show
+                                snug tore neat an on be gave
+                            </div>
+                        </td>
+                        <td>
+                            <div class="slds-truncate dv-dynamic-width" style={fixedWidth}>Piqued favour</div>
+                        </td>
+                        <td>
+                            <div class="slds-truncate dv-dynamic-width" style={fixedWidth}>behaviour</div>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="slds-truncate dv-dynamic-width" style={fixedWidth}>Made neat an on be gave show
+                                snug tore neat an on be gave
+                            </div>
+                        </td>
+                        <td>
+                            <div class="slds-truncate dv-dynamic-width" style={fixedWidth}>Piqued favour</div>
+                        </td>
+                        <td>
+                            <div class="slds-truncate dv-dynamic-width" style={fixedWidth}>behaviour</div>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="slds-truncate dv-dynamic-width" style={fixedWidth}>Made neat an on be gave show
+                                snug tore neat an on be gave
+                            </div>
+                        </td>
+                        <td>
+                            <div class="slds-truncate dv-dynamic-width" style={fixedWidth}>Piqued favour</div>
+                        </td>
+                        <td>
+                            <div class="slds-truncate dv-dynamic-width" style={fixedWidth}>behaviour</div>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="slds-truncate dv-dynamic-width" style={fixedWidth}>Made neat an on be gave show
+                                snug tore neat an on be gave
+                            </div>
+                        </td>
+                        <td>
+                            <div class="slds-truncate dv-dynamic-width" style={fixedWidth}>Piqued favour</div>
+                        </td>
+                        <td>
+                            <div class="slds-truncate dv-dynamic-width" style={fixedWidth}>behaviour</div>
+                        </td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+</template>

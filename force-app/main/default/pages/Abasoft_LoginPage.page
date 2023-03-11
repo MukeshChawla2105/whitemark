@@ -1,0 +1,277 @@
+<apex:page sidebar="false" showHeader="false" standardStylesheets="false" action="{!checkExistingHashKey}" controller="AabaSoftLogInFormController"
+           cache="true" expires="18000">
+    <site:previewAsAdmin />
+    <html> 
+        
+        <head>
+            <c:Libraries ></c:Libraries>
+            <style>
+                body {
+                background: #F5F5F5;
+                }
+                
+                .card-img-left {
+                width: 45%;
+                /* Link to your background image using in the property below! */
+                background: scroll center url('https://source.unsplash.com/WEQbe2jBg40/414x512');
+                background-size: cover;
+                }
+                
+                .btn-login {
+                font-size: 0.9rem;
+                letter-spacing: 0.05rem;
+                padding: 0.75rem 1rem;
+                }
+                
+                .btn-google {
+                color: white !important;
+                background-color: #ea4335;
+                }
+                
+                .btn-facebook {
+                color: white !important;
+                background-color: #3b5998;
+                }
+                
+                .loadingBackground {
+                position: fixed;
+                height: 100%;
+                width: 100%;
+                background: #F6F6F6;
+                opacity: 0.7;
+                top: 0px;
+                left: 0;
+                bottom: 0;
+                right: 0;
+                }
+                
+                .loading {
+                top: 50%;
+                left: 50%;
+                margin: -50px 0px 0px -50px;
+                position: fixed;
+                }
+                
+                @media only screen and (min-width:850px) and (max-width:1000px) {
+                .padding_1000 {
+                padding-left: 20px !important;
+                padding-right: 20px !important;
+                }
+                }
+                
+                @media only screen and (max-width: 750px) {
+                @media screen and (min-device-width: 650px) and (max-device-width: 750px) {
+                .col {
+                padding:unset;
+                }
+                }
+                .col {
+                flex-shrink: 0 !important;
+                flex: unset;
+                
+                }
+                }
+            </style>
+            <apex:outputPanel id="jspanel">
+                <script>
+                debugger;
+                var LoginHascode = "{!$CurrentPage.parameters.id}";
+                var PhoneNumber = "{!$CurrentPage.parameters.phone}";
+                var agentCode = "{!$CurrentPage.parameters.AgentId}";
+                var CurrentState = "{!$CurrentPage.parameters.State}";
+                if (CurrentState == 'Invalid') {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Opps....!',
+                        text: 'Please Enter the Correct Username & Password !'
+                    })
+                    //$scope.$apply();
+                }
+                
+                function loginUserOnclick() {
+                    debugger;
+                    var LoginHascode = "{!$CurrentPage.parameters.id}";
+                    var PhoneNumber = "{!$CurrentPage.parameters.phone}";
+                    var agentCode = "{!$CurrentPage.parameters.AgentId}";
+                    var uName = document.getElementById("{!$Component.frm.txt1}").value;
+                    var paswor = document.getElementById("{!$Component.frm.txt2}").value;
+                    //var pWord = document.getElementById("{!$Component.frm.txt2}").value;
+                    call(uName, paswor, PhoneNumber, agentCode);
+                    //return true;
+                }
+                function saveHandler(){
+                    var CurrentState = "{!$CurrentPage.parameters.State}";
+                    if (CurrentState == 'Invalid') {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Opps....!',
+                            text: 'Please Enter the Correct Username & Password !'
+                        })
+                    }
+                }
+                
+                //var app = angular.module('myApp', []);
+                /*app.controller('myCtrl', function($scope) {
+            debugger;
+                $scope.userName;
+                $scope.showSpinner = false;
+                             $scope.loginUserOnclick = function () {
+                    debugger;
+                    $scope.userPassword;
+                    $scope.showSpinner = true;
+                    $scope.loginPage = false;
+                    debugger;
+                    AabaSoftLogInFormController.loginUser($scope.userName, $scope.userPassword, function (result, event) {
+                    if (event.status && result != null) {
+            
+                            debugger;
+                            Swal.fire(
+                                '', 'Logged In Successfully', 'Success'
+                            )
+                            $scope.$apply();
+            
+                     debugger;
+                    //window.open("https://whitemart--partial--c.sandbox.vf.force.com/apex/CusomerDetailAURA_IN_VFPage");
+                    var UrlString = 'https://whitemart--partial--c.sandbox.vf.force.com/apex/CusomerDetailAURA_IN_VFPage' +'?id='+result + '&Phone='+PhoneNumber + '&AgentId='+ agentCode;
+                    window.location.replace(UrlString);
+                    } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Opps....!',
+                                text: 'Please Enter the Correct Username & Password !'
+                            })
+                    }
+                    }, { escape: false })
+                    $scope.showSpinner = false;
+                    $scope.$apply();
+                }
+            
+            });*/
+                </script>
+            </apex:outputPanel>
+            
+        </head>
+        <apex:form id="frm">
+            <!-- apex:actionfunction action="{!loginUser }" oncomplete="saveHandler()" name="call" reRender="success" oncomplete="saveHandler()"/ -->
+            <apex:actionfunction action="{!loginUser}" name="call" reRender="success" oncomplete="saveHandler()">
+                <apex:param name="firstParam" value="" assignTo="{!userName}" />
+                <apex:param name="SecondParam" value="" assignTo="{!password}" />
+                <apex:param name="thirdParam" value="" assignTo="{!PhoneNumber}" />
+                <apex:param name="fourthParam" value="" assignTo="{!AgentuniqueID}" />
+            </apex:actionfunction>
+            <div>
+                <!-->ng-app="myApp" ng-controller="myCtrl" -->
+                
+                <body>
+                    
+                    <div class="loadingSection" id="spinner">
+                        <!-- ng-if="showSpinner" -->
+                        <div class="loadingBackground"></div>
+                        <div>
+                        </div>
+                    </div>
+                    <nav class="navbar navbar-expand-lg navbar-light" style="background-color : rgb(28 28 112) !important;font-size: 14px;">
+                        <div class="container-fluid">
+                            <a class="navbar-brand" href="#">
+                                <apex:image url="{!$Resource.Logo}" width="120%" height="200%" />
+                            </a>
+                            <div class="collapse navbar-collapse" id="navbarNavDarkDropdown">
+                                <div class="navbar-nav ms-auto me-5">
+                                    <li class="nav-item dropdown">
+                                    </li>
+                                </div>
+                            </div>
+                        </div>
+                    </nav>
+                    
+                    <div class="container px-4">
+                        <!-- ng-hide="registrationPage" -->
+                        <div class="row gx-5 mt-5">
+                            <div class="col"  style="border: 5px solid #2596be;">
+                                <div class="p-3 border bg-light mt-5">
+                                    <div class="card">
+                                        <apex:image url="{!$Resource.WhiteMart}" width="100%" height="50%" />
+                                        <!--div class="card-body">
+                                            <p class="card-text">Hello We partner with our customers across a project’s lifespan – from inception,
+                                                through product commercialisation, sharing our experience and expertise. With
+                                                our informed, committed, and passionate team of professionals, we strive to provide
+                                                you with solutions that bring your culinary ideas to life, faster and better.</p>
+                                        </div-->
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col" style="border: 5px solid #000000;">
+                                <br/><br/>
+                                <div class="p-3 border bg-light align-items-center" >
+                                    
+                                    <div class="card-body p-4 p-sm-5 padding_1000" style="border: 5px solid #000000;" >
+                                        <h5 class="card-title text-center mb-5 fw-light fs-5">Login</h5>
+                                        
+                                        <div class="form-floating mb-3">
+                                            Enter Username :
+                                            <apex:inputText id="txt1" value="{!userName}" />
+                                        </div>
+                                        <div class="form-floating mb-3">
+                                            <br /> Enter Password :
+                                            <apex:inputSecret id="txt2" value="{!password}" />
+                                        </div>
+                                        <div class="form-floating mb-3 ">
+                                            <apex:pageBlock >
+                                                <apex:commandButton status="busy" value="Login" action="{!loginUser}"></apex:commandButton><!--onclick="loginUserOnclick()"-->
+                                                <!-- button class="btn btn-lg btn-primary btn-login fw-bold text-uppercase" type="button" ng-click="loginUserOnclick()">Login</button -->
+                                            </apex:pageBlock>
+                                        </div>
+                                        <div class="text-center">
+                                            <br/>
+                                            <span>
+                                                <a class="small" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Forgot Password?</a>
+                                            </span>
+                                        </div>
+                                        
+                                    </div>
+                                    
+                                    
+                                    <div class="card-body">
+                                        <p class="card-text">
+                                            <b>
+                                                <br/> <br/>
+                                                Hello We partner with our customers across a project’s lifespan – from inception,
+                                                through product commercialisation, sharing our experience and expertise. With
+                                                our informed, committed, and passionate team of professionals, we strive to provide
+                                                you with solutions that bring your culinary ideas to life, faster and better. <br/>
+                                                😊😊
+                                            </b>
+                                        </p>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="forgotPasswordPopup"
+                         aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="staticBackdropLabel">Enter Your Registered Email Id</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <input type="text" class="form-control" id="exampleInputPassword1" />
+                                    <!-- ng-model="verifyEmail" -->
+                                    
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-primary" ng-click="checkForEmail()">Submit</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </body>
+            </div>
+        </apex:form>
+    </html>
+    
+</apex:page>

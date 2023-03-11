@@ -1,0 +1,37 @@
+<template>
+    
+<!--  ----------------------------------------------------------------------  -->
+<!--  NOTE: Please add the following <META> element to your page <HEAD>.      -->
+<!--  If necessary, please modify the charset parameter to specify the        -->
+<!--  character set of your HTML page.                                        -->
+<!--  ----------------------------------------------------------------------  -->
+
+<!--  ----------------------------------------------------------------------  -->
+<!--  NOTE: Please add the following <FORM> element to your page.             -->
+<!--  ----------------------------------------------------------------------  -->
+
+<form action="https://test.salesforce.com/servlet/servlet.WebToLead?encoding=UTF-8" method="POST">
+
+    <input type=hidden name="oid" value="00D1m0000008nut">
+    <input type=hidden name="retURL"
+        value="https://whitemart--partial.lightning.force.com/lightning/o/Lead/list?filterName=00B2x000006XnnsEAC">
+
+
+    <label for="first_name">First Name</label><input id="first_name" maxlength="40" name="first_name" size="20"
+        type="text" /><br>
+
+    <label for="last_name">Last Name</label><input id="last_name" maxlength="80" name="last_name" size="20"
+        type="text" /><br>
+
+    <label for="email">Email</label><input id="email" maxlength="80" name="email" size="20" type="text" /><br>
+
+    <label for="phone">Phone</label><input id="phone" maxlength="40" name="phone" size="20" type="text" /><br>
+
+    Owner:<input id="00N1m000007V0r5" maxlength="125" name="00N1m000007V0r5" size="20" type="text" value={recordId}/><br>
+
+    <input type="submit" name="submit">
+
+</form>
+
+
+</template>

@@ -1,0 +1,160 @@
+<aura:component controller="CustomerDetails" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global">
+    <aura:attribute name="ProductId" type="string" default="" />
+    <aura:attribute name="OrderProductList" type="List"/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doinit}"/>
+    
+    <div class="slds-m-around_medium">
+        <lightning:card title="Product Details">
+            
+            <lightning:tabset selectedTabId="one">
+                <lightning:tab label="Details" id="one">
+                    <lightning:recordViewForm recordId="{!v.ProductId}" objectApiName="Produt2">
+                        
+                        <lightning:accordion aura:id="accordion"  allowMultipleSectionsOpen="true" activeSectionName="Product general  Details">
+                            
+                            <lightning:accordionSection name="Product general  Details" label="Product general  Details">
+                                <div class="slds-grid">
+                                    <div class="slds-col slds-size_1-of-2 slds-p-around_xx-large">
+                                        <div class="form-group">
+                                            <lightning:outputField fieldName="Name" /> 
+                                        </div>
+                                        <div class="form-group">
+                                            <lightning:outputField fieldName="Brand__c" />
+                                        </div>
+                                        <div class="form-group">
+                                            <lightning:outputField fieldName="StockKeepingUnit" /> 
+                                        </div>
+                                        <div class="form-group">
+                                            <lightning:outputField fieldName="MOP1__c" />
+                                        </div>
+                                        <div class="form-group">
+                                            <lightning:outputField fieldName="MOP2__c" /> 
+                                        </div>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-around_xx-large">
+                                        <div class="form-group">
+                                            <lightning:outputField fieldName="SAP_Code__c" />   
+                                        </div>
+                                        <div class="form-group">
+                                            <lightning:outputField fieldName="ProductQuantity__c" />   
+                                        </div>
+                                        <div class="form-group">
+                                            <lightning:outputField fieldName="IsActive" />   
+                                        </div>
+                                        <div class="form-group">
+                                            <lightning:outputField fieldName="Product_Id__c" />   
+                                        </div>
+                                        <div class="form-group">
+                                            <lightning:outputField fieldName="MRP__c" />   
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </lightning:accordionSection>
+                            <lightning:accordionSection name="Product Specifications" label="Product Specifications">
+                                <div class="slds-grid">
+                                    <div class="slds-col slds-size_1-of-2 slds-p-around_xx-large">
+                                        <div class="form-group">
+                                            <lightning:outputField fieldName="Family" />    
+                                        </div>
+                                        <div class="form-group">
+                                            <lightning:outputField fieldName="Sub_Category__c" /> 
+                                        </div>
+                                        <div class="form-group">
+                                            <lightning:outputField fieldName="Capacity_Size__c" />   
+                                        </div>
+                                        <div class="form-group">
+                                            <lightning:outputField fieldName="Warranty__c" />   
+                                        </div>
+                                        <div class="form-group">
+                                            <lightning:outputField fieldName="Description" />   
+                                        </div>
+                                        
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-around_xx-large">
+                                        <div class="form-group">
+                                            <lightning:outputField fieldName="ProductCode" />   
+                                        </div>
+                                        <div class="form-group">
+                                            <lightning:outputField fieldName="Star_Rating__c" />   
+                                        </div>
+                                        <div class="form-group">
+                                            <lightning:outputField fieldName="Colour__c" />   
+                                        </div>
+                                        <div class="form-group">
+                                            <lightning:outputField fieldName="Consumer_Offer__c" />   
+                                        </div>    
+                                    </div>
+                                </div>
+                            </lightning:accordionSection>
+                        </lightning:accordion>
+                    </lightning:recordViewForm>
+                    
+                </lightning:tab>
+                <lightning:tab label="PriceBook Entry" id="two">
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                            <thead>
+                                <tr class="slds-line-height_reset slds-text-title_caps">
+                                    <th  class="slds-is-resizable" scope="col">
+                                        <div class="slds-truncate" title="Account Number">
+                                            Name
+                                        </div>
+                                    </th>
+                                    <th class="slds-is-resizable" scope="col">
+                                        <div class="slds-truncate" title="Industry">
+                                            MOP
+                                        </div>
+                                    </th>
+                                    <th class="slds-is-resizable" scope="col">
+                                        <div class="slds-truncate" title="MRP">
+                                            MRP
+                                        </div>
+                                    </th>
+                                    <th class="slds-is-resizable" scope="col">
+                                        <div class="slds-truncate" title="Price">
+                                            Price
+                                        </div>
+                                    </th>
+                                    <th class="slds-is-resizable" scope="col">
+                                        <div class="slds-truncate" title="Phone">
+                                            Active
+                                        </div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <aura:if isTrue="{!v.OrderProductList.length > 0}">
+                                <tbody>
+                                    <aura:iteration items="{!v.OrderProductList}" var="ordProd">
+                                        <tr class="slds-hint-parent">
+                                            <td data-label="Account Number">
+                                                <div class="slds-truncate slds-cell-wrap" title="{!ordProd.Name}">{!ordProd.Price_Book_Name__c}</div>
+                                            </td>
+                                            <td data-label="Account Number">
+                                                <div class="slds-truncate slds-cell-wrap" title="{!ordProd.Name}">{!ordProd.MRP__c}</div>
+                                            </td>
+                                            <td data-label="Account Number">
+                                                <div class="slds-truncate slds-cell-wrap" title="{!ordProd.Name}">{!ordProd.Price__c}</div>
+                                            </td>
+                                            <td data-label="Account Number">
+                                                <div class="slds-truncate slds-cell-wrap" title="{!ordProd.Product2.UnitPrice}">{!ordProd.UnitPrice}</div>
+                                            </td>
+                                            <td data-label="Phone">
+                                                <div class="slds-truncate" title="{!ordProd.Quantity}">{!ordProd.IsActive}</div>
+                                            </td>
+                                        </tr>
+                                    </aura:iteration>
+                                </tbody>
+                            </aura:if>
+                        </table>
+                    </div>
+                    
+                    
+                </lightning:tab>
+            </lightning:tabset>
+            
+            
+        </lightning:card>  
+    </div>
+</aura:component>

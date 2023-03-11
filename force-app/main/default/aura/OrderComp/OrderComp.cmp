@@ -1,0 +1,22 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickActionWithoutHeader" 
+                access="global" controller="OrderCompController">
+    <aura:attribute name = "OrderDetail" type="Order"/>
+    <aura:attribute name="HpyClOptions" type="List" />
+    <aura:attribute name="lossReasonOptions" type="List" />
+    
+    <lightning:select name="Happy Call" label="Select Happy Call Options" aura:id="option" value="{!OrderDetail.Happy_Call__c}"  >
+        <option value="">--None--</option>
+        <aura:iteration items="{!v.HpyClOptions}" var="item">
+            <option text="{!item.value}" value="{!item.key}" selected="{!item.selected}"/>
+        </aura:iteration>
+    </lightning:select>
+    
+    <lightning:select name="Loss Reasons" label="Select Loss Reason" aura:id="reason" value="{!OrderDetail.Opportunity.Loss_Reason__c}" >
+        <option value="">--None--</option>
+        <aura:iteration items="{!v.lossReasonOptions}" var="item">
+            <option text="{!item.value}" value="{!item.key}" selected="{!item.selected}"/>
+        </aura:iteration>
+    </lightning:select>
+    
+    <!-- onchange="{!c.setLeadStage}" -->
+</aura:component>

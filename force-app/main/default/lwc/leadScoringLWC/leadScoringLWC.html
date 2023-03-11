@@ -1,0 +1,29 @@
+<template>
+
+    <lightning-card title="Generate your Scoring Criteria.." icon-name="custom:custom63">
+        <lightning-layout multiple-rows>
+            <lightning-layout-item size="12" small-device-size="6" medium-device-size="4" large-device-size="3"
+                padding="around-small">
+                <select class="slds-select" name="optionSelect">
+                    <template for:each={wiredContactFields.data} for:item="field">
+                        <option key={field} value={field}>{field}</option>
+                    </template>
+                </select>
+            </lightning-layout-item>
+            <lightning-layout-item size="12" small-device-size="6" medium-device-size="4" large-device-size="3"
+                padding="around-small">
+                <lightning-combobox name="Rating" label="Rating" placeholder="Select Rating" options={ratingOptions}
+                    onchange={handleRatingChange} value={selectedRatingValue}></lightning-combobox>
+            </lightning-layout-item>
+            <lightning-layout-item size="12" small-device-size="6" medium-device-size="4" large-device-size="3"
+                padding="around-small">
+                <lightning-combobox name="Industry" label="Industry" placeholder="Select Industry"
+                    options={industryOptions} onchange={handleIndustryChange} value={selectedIndustryValue}>
+                </lightning-combobox>
+            </lightning-layout-item>
+        </lightning-layout>
+    </lightning-card>
+</template>
+<!--label>Select the fields you want to display in the Data Table</label>
+   
+</template-->
